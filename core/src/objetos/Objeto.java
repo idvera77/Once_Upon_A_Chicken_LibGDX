@@ -25,17 +25,16 @@ public class Objeto extends Actor {
     /**
      * Constructor con todos los parámetros de objeto
      * @param rutaTextura la textura que usamos
-     * @param x           posicion x inicial
-     * @param y           posicion y inicial
-     * @param w           anchura inicial
-     * @param h           altura inicial
+     * @param x posicion x inicial
+     * @param y posicion y inicial
+     * @param w anchura inicial
+     * @param h altura inicial
      */
     public Objeto(String rutaTextura, float x, float y, float w, float h) {
-        //Cambio Posición del Sprite
         sprite = new Sprite(new Texture(rutaTextura));
         sprite.setBounds(x, y, w, h);
         this.setSize(w, h);
-        this.setPosition(x, y); //Cambio posición del actor
+        this.setPosition(x, y);
         this.setOrigin(this.sprite.getWidth() / 2, this.sprite.getHeight() / 2);
         sprite.setOrigin(this.getOriginX(), this.getOriginY());
     }

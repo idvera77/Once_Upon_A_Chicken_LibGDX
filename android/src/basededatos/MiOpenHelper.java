@@ -18,16 +18,14 @@ public class MiOpenHelper extends SQLiteOpenHelper {
     private static final String NOMBRE = "nombre";
     private static final String PASSWORD = "password";
     private static final String VIDA = "vida";
-    private static final String ATAQUE = "ataque";
-    private static final String DEFENSA = "defensa";
-    private static final String MANA = "mana";
+    private static final String VIDAMAXIMA = "vidaMaxima";
     private static final String PUNTUACION = "puntuacion";
     private static final String KEY_ID = "id";
 
     // Tabla Jugador
     private static final String CREATE_TABLE_JUGADOR = "CREATE TABLE " + TABLE_JUGADOR + "("
             + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + NOMBRE + " VARCHAR(30)," + PASSWORD + " VARCHAR(30)," +
-            VIDA + " INTEGER," + MANA + " INTEGER," + ATAQUE + " INTEGER," + DEFENSA + " INTEGER," + PUNTUACION + " INTEGER);";
+            VIDA + " INTEGER," + VIDAMAXIMA + " INTEGER);";
 
     public MiOpenHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

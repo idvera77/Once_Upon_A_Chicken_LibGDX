@@ -8,7 +8,7 @@ public class GemaAzul extends Objeto {
     private Sound sound;
 
     public GemaAzul(float x, float y) {
-        super("objetos/gemaazul.png", x, y, Gdx.graphics.getWidth()/15, Gdx.graphics.getHeight()/15);
+        super("objetos/gemaazul.png", x, y, Gdx.graphics.getWidth()/20, Gdx.graphics.getHeight()/20);
         sound = Gdx.audio.newSound(Gdx.files.internal("sonidos/gema.mp3"));
         puntuacion = 1000;
     }

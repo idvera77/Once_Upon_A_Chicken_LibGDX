@@ -10,7 +10,7 @@ public class GemaRoja extends Objeto{
     private Sound sound;
 
     public GemaRoja(float x, float y) {
-        super("objetos/gemaroja.png", x, y, Gdx.graphics.getWidth()/15, Gdx.graphics.getHeight()/15);
+        super("objetos/gemaroja.png", x, y, Gdx.graphics.getWidth()/20, Gdx.graphics.getHeight()/20);
         sound = Gdx.audio.newSound(Gdx.files.internal("sonidos/gema.mp3"));
         puntuacion = 500;
     }

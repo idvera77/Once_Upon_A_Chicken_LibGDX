@@ -22,26 +22,23 @@ import objetos.Objeto;
 public class Personaje extends Actor {
     protected Sprite sprite;
     protected ArrayList<Objeto> objetos;
-    protected int vida, vidaMaxima, ataque, defensa, mana, velocidad, puntuacion;
+    protected int vida, vidaMaxima, velocidad, puntuacion;
     protected boolean colliding; //Nos detecta si está colisionando o no
     private HashSet<Integer> moving;
 
+    //Constructor de Heroe
     public Personaje(String rutaTextura) {
         this.moving = new HashSet<Integer>();
-        //Atributos
         velocidad = 10;
         vida = 100;
         vidaMaxima = 100;
-        mana = 100;
-        ataque = 100;
-        defensa = 100;
         puntuacion = 1000;
         colliding = false;
-        objetos = new ArrayList<Objeto>();
-
+        objetos = new ArrayList<>();
         sprite = new Sprite(new Texture(rutaTextura));
-        sprite.setBounds(0, 0, Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 7);
+        sprite.setBounds(50, 50, Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 7);
         this.setSize(Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 7);
+        this.setPosition(50, 50);
         this.setOrigin(this.sprite.getWidth() / 2, this.sprite.getHeight() / 2);
         sprite.setOrigin(this.getOriginX(), this.getOriginY());
         addListener(new EscuchadorJugador(this));
@@ -50,20 +47,13 @@ public class Personaje extends Actor {
     public Personaje(String rutaTextura, float x, float y) {
         this.moving = new HashSet<Integer>();
         velocidad = 10;
-        vida = 100;
-        vidaMaxima = 100;
-        mana = 100;
-        ataque = 100;
-        defensa = 100;
         objetos = new ArrayList<Objeto>();
-
         sprite = new Sprite(new Texture(rutaTextura));
         sprite.setBounds(x, y, Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 7);
         this.setSize(Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 7);
         this.setPosition(x, y); //Cambio posición del actor
         this.setOrigin(this.sprite.getWidth() / 2, this.sprite.getHeight() / 2);
         sprite.setOrigin(this.getOriginX(), this.getOriginY());
-        addListener(new EscuchadorJugador(this));
     }
 
     public int getVida() {
@@ -80,30 +70,6 @@ public class Personaje extends Actor {
 
     public void setVidaMaxima(int vidaMaxima) {
         this.vidaMaxima = vidaMaxima;
-    }
-
-    public int getAtaque() {
-        return ataque;
-    }
-
-    public void setAtaque(int ataque) {
-        this.ataque = ataque;
-    }
-
-    public int getDefensa() {
-        return defensa;
-    }
-
-    public void setDefensa(int defensa) {
-        this.defensa = defensa;
-    }
-
-    public int getMana() {
-        return mana;
-    }
-
-    public void setMana(int mana) {
-        this.mana = mana;
     }
 
     public int getVelocidad() {
@@ -148,22 +114,28 @@ public class Personaje extends Actor {
         return sprite.getBoundingRectangle();
     }
 
+    /**
+     * @param c
+     * @return
+     */
     public boolean checkCollision(Objeto c) {
         boolean overlaps = getHitBox().overlaps(c.getHitBox());
         if (overlaps && colliding == false) {
             colliding = true;
-            Gdx.app.log("Colisionando", "con " + c.getClass().getName());
         } else if (!overlaps) {
             colliding = false;
         }
         return colliding;
     }
 
+    /**
+     * @param enemigo
+     * @return
+     */
     public boolean checkCollision(PolloMalvado enemigo) {
         boolean overlaps = getHitBox().overlaps(enemigo.getHitBox());
         if (overlaps && colliding == false) {
             colliding = true;
-            Gdx.app.log("Colisionando", "con " + enemigo.getClass().getName());
         } else if (!overlaps) {
             colliding = false;
         }
@@ -254,8 +226,6 @@ public class Personaje extends Actor {
         MoveToAction mta = new MoveToAction();
         mta.setPosition(getX() - 40, getY());
         mta.setDuration(0);
-        ParallelAction pa = new ParallelAction(mta);
-        addAction(pa);
         SequenceAction parpadear = new SequenceAction(new SequenceAction(
                 Actions.alpha(0.1f, 0.2f),
                 Actions.alpha(1f, 0.2f),
@@ -278,8 +248,7 @@ public class Personaje extends Actor {
         ScaleByAction danioAumentar2 = new ScaleByAction();
         danioAumentar2.setAmount(+0, +0.5f);
         danioAumentar2.setDuration(0.4f);
-        SequenceAction escalarseDanio = new SequenceAction(danioDisminuir,
-                danioDisminuir2, danioAumentar, danioAumentar2);
+        SequenceAction escalarseDanio = new SequenceAction(mta, danioDisminuir, danioDisminuir2, danioAumentar, danioAumentar2);
         addAction(new ParallelAction(parpadear, escalarseDanio));
     }
 

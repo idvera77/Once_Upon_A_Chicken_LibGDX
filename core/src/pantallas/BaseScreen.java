@@ -1,7 +1,6 @@
 package pantallas;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 
 import com.badlogic.gdx.graphics.Color;
@@ -10,7 +9,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -23,12 +22,9 @@ import java.util.Random;
 
 import actores.PolloMalvado;
 import actores.Popollo;
-import escuchadores.EscuchadorStage;
 import objetos.GemaAzul;
 import objetos.GemaRoja;
 import objetos.Llave;
-
-import static com.badlogic.gdx.scenes.scene2d.InputEvent.Type.keyDown;
 
 
 public abstract class BaseScreen implements Screen {
@@ -41,44 +37,31 @@ public abstract class BaseScreen implements Screen {
     protected GemaAzul gemaAzul;
     protected GemaRoja gemaRoja;
     protected ProgressBar healthBar;
-    Label text;
-    Label.LabelStyle textStyle;
-    BitmapFont font = new BitmapFont();
+    private FreeTypeFontGenerator fontGenerator;
+    private FreeTypeFontGenerator.FreeTypeFontParameter fontParameter;
+    private BitmapFont font;
+    private Label text;
+    private Label.LabelStyle textStyle;
+    private int puntuacion;
+
 
     public BaseScreen(Juego juego) {
+        //Creando la base del juego
         game = juego;
         pantalla = new Stage(new FillViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+        Gdx.input.setInputProcessor(pantalla);
+        //Añadiendo los actores
+        //Primero el heroe
         popollo = new Popollo();
         pantalla.addActor(popollo);
 
-        textStyle = new Label.LabelStyle();
-        textStyle.font = font;
-
-        text = new Label("Gamever",textStyle);
-        text.setBounds(0,.2f,100, 100);
-        text.setFontScale(1f,1f);
-        pantalla.addActor(text);
-
+        //Añadimos los enemigos
         enemigoTerrestre = new PolloMalvado(Gdx.graphics.getWidth(), 140);
         pantalla.addActor(enemigoTerrestre);
         enemigoVolador = new PolloMalvado(140, 0);
         pantalla.addActor(enemigoVolador);
-        /**
-         * pantalla.addActor(new Miguel(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2));
-         *         //Grupo de enemigos
-         *         enemigos=new Group();
-         *         enemigos.addActor(new Alfredo(0,Gdx.graphics.getHeight()/2));
-         *         enemigos.addActor(new Antonio(Gdx.graphics.getWidth()/2,0));
-         *         for (Actor enemigo: enemigos.getChildren()){
-         *             enemigos.addListener(new EscuchadorJugador((Personaje) enemigo));
-         *         }
-         *         pantalla.addActor(enemigos);
-         */
 
-        //Pongo el foco del movimiento en la pantalla 1
-        pantalla.addListener(new EscuchadorStage(pantalla));
-        Gdx.input.setInputProcessor(pantalla);
-
+        //Añadimos los objetos
         //Añado una llave
         Random r = new Random();
         float posXLlave = (float) r.nextInt(Gdx.graphics.getWidth() / 10 * 9);
@@ -89,12 +72,27 @@ public abstract class BaseScreen implements Screen {
         //Añado las gemas
         float posXAzul = (float) r.nextInt(Gdx.graphics.getWidth() / 10 * 9);
         float posYAzul = (float) r.nextInt(Gdx.graphics.getHeight() / 10 * 9);
+        gemaAzul = new GemaAzul(posXAzul, posYAzul);
+        pantalla.addActor(gemaAzul);
+
         float posXRoja = (float) r.nextInt(Gdx.graphics.getWidth() / 10 * 9);
         float posYRoja = (float) r.nextInt(Gdx.graphics.getHeight() / 10 * 9);
-        gemaAzul = new GemaAzul(posXAzul, posYAzul);
         gemaRoja = new GemaRoja(posXRoja, posYRoja);
-        pantalla.addActor(gemaAzul);
         pantalla.addActor(gemaRoja);
+
+        //Añadimos el texto a mostrar, en este juego la puntuacion obtenida.
+        fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("04B_20__.TTF"));
+        fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        fontParameter.size = 18;
+        fontParameter.borderWidth = 2;
+        fontParameter.borderColor = Color.BLACK;
+        fontParameter.color = Color.WHITE;
+        font = fontGenerator.generateFont(fontParameter);
+        textStyle = new Label.LabelStyle();
+        textStyle.font = font;
+        text = new Label("SCORE: " + popollo.getPuntuacion(), textStyle);
+        text.setPosition(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()-30);
+        pantalla.addActor(text);
 
         //Creo la barra de vida de popollo
         Pixmap pixmap = new Pixmap(120, 40, Pixmap.Format.RGBA8888);
@@ -152,29 +150,30 @@ public abstract class BaseScreen implements Screen {
         if (popollo.checkCollision(llave)) {
             llave.reduce();
             popollo.addObjeto(llave);
-            llave.getSound().play(15.0f);
+            llave.getSound().play(1f);
             llave.addAction(Actions.removeActor());
             llave = new Llave(0, 0);
         }
         if (popollo.checkCollision(gemaRoja)) {
-            gemaRoja.getSound().play(15.0f);
+            gemaRoja.getSound().play(1f);
             gemaRoja.addAction(Actions.removeActor());
             gemaRoja = new GemaRoja(0, 0);
+            popollo.setPuntuacion(popollo.getPuntuacion() + gemaRoja.getPuntuacion());
+            text.setText("SCORE: " + popollo.getPuntuacion());
         }
         if (popollo.checkCollision(gemaAzul)) {
-            gemaAzul.getSound().play(15.0f);
+            gemaAzul.getSound().play(1f);
             gemaAzul.addAction(Actions.removeActor());
             gemaAzul = new GemaAzul(0, 0);
-            text.remove();
-            text = new Label("POLLOOOOOOOOOOOOOOOOOO",textStyle);
-            pantalla.addActor(text);
+            popollo.setPuntuacion(popollo.getPuntuacion() + gemaAzul.getPuntuacion());
+            text.setText("SCORE: " + popollo.getPuntuacion());
 
         }
         if (popollo.checkCollision(enemigoTerrestre)) {
             popollo.setVida(popollo.getVida() - 10);
             healthBar.setValue(popollo.getVida());
             popollo.recibirDaño();
-            popollo.getSound().play(15.0f);
+            popollo.getSound().play(1f);
             enemigoTerrestre.addAction(Actions.removeActor());
             enemigoTerrestre = new PolloMalvado(Gdx.graphics.getWidth(), 140);
             pantalla.addActor(enemigoTerrestre);
