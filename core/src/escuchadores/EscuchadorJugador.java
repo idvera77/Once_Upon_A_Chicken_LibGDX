@@ -1,6 +1,8 @@
 package escuchadores;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 
@@ -51,4 +53,16 @@ public class EscuchadorJugador extends InputListener {
         }
         return super.keyUp(event, keycode);
     }
+
+    @Override
+    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+        if(x < Gdx.graphics.getWidth()/3){
+            jugador.startMoving(3);
+        }
+        if(x > Gdx.graphics.getWidth()/3*2){
+            jugador.startMoving(1);
+        }
+        return super.touchDown(event, x, y, pointer, button);
+    }
+
 }

@@ -24,25 +24,28 @@ public class Personaje extends Actor {
     protected ArrayList<Objeto> objetos;
     protected int vida, vidaMaxima, velocidad, puntuacion;
     protected boolean colliding; //Nos detecta si está colisionando o no
+
     private HashSet<Integer> moving;
 
     //Constructor de Heroe
     public Personaje(String rutaTextura) {
         this.moving = new HashSet<Integer>();
-        velocidad = 10;
+        velocidad = 5;
         vida = 100;
         vidaMaxima = 100;
         puntuacion = 1000;
         colliding = false;
         objetos = new ArrayList<>();
         sprite = new Sprite(new Texture(rutaTextura));
-        sprite.setBounds(50, 50, Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 7);
+        sprite.setBounds(50, Gdx.graphics.getHeight()/5, Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 7);
         this.setSize(Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 7);
-        this.setPosition(50, 50);
+        this.setPosition(50, Gdx.graphics.getHeight()/5);
         this.setOrigin(this.sprite.getWidth() / 2, this.sprite.getHeight() / 2);
         sprite.setOrigin(this.getOriginX(), this.getOriginY());
+
         addListener(new EscuchadorJugador(this));
     }
+
 
     public Personaje(String rutaTextura, float x, float y) {
         this.moving = new HashSet<Integer>();
@@ -72,14 +75,6 @@ public class Personaje extends Actor {
         this.vidaMaxima = vidaMaxima;
     }
 
-    public int getVelocidad() {
-        return velocidad;
-    }
-
-    public void setVelocidad(int velocidad) {
-        this.velocidad = velocidad;
-    }
-
     public int getPuntuacion() {
         return puntuacion;
     }
@@ -90,6 +85,10 @@ public class Personaje extends Actor {
 
     public void addObjeto(Objeto o) {
         this.objetos.add(o);
+    }
+
+    public ArrayList<Objeto> getObjetos() {
+        return objetos;
     }
 
     @Override
@@ -132,7 +131,7 @@ public class Personaje extends Actor {
      * @param enemigo
      * @return
      */
-    public boolean checkCollision(PolloMalvado enemigo) {
+    public boolean checkCollision(Personaje enemigo) {
         boolean overlaps = getHitBox().overlaps(enemigo.getHitBox());
         if (overlaps && colliding == false) {
             colliding = true;
@@ -158,7 +157,6 @@ public class Personaje extends Actor {
 
     public void stopMoving(int direccion) {
         this.moving.remove(direccion);
-
     }
 
     @Override
@@ -179,9 +177,11 @@ public class Personaje extends Actor {
     }
 
     public void moveLeft(float delta) {
-        if (getX() <= -getWidth()) {
-            setX(Gdx.graphics.getWidth());
+        if (getX() <= 0) {
+            setX(0);
         } else {
+            this.sprite = new Sprite(new Texture("personajes/polloizquierda.png"));
+            sprite.setBounds(sprite.getX(), sprite.getY(), Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 7);
             MoveByAction moveLeftAction = new MoveByAction();
             moveLeftAction.setAmount(-this.velocidad, 0);
             moveLeftAction.setDuration(delta);
@@ -190,8 +190,8 @@ public class Personaje extends Actor {
     }
 
     public void moveUp(float delta) {
-        if (getY() >= Gdx.graphics.getHeight()) {
-            setY(-getHeight());
+        if (getY() >= Gdx.graphics.getHeight()-this.sprite.getHeight()) {
+            setY(Gdx.graphics.getHeight()-this.sprite.getHeight());
         } else {
             MoveByAction moveUpAction = new MoveByAction();
             moveUpAction.setAmount(0, this.velocidad);
@@ -201,8 +201,8 @@ public class Personaje extends Actor {
     }
 
     public void moveDown(float delta) {
-        if (getY() <= -getHeight()) {
-            setY(Gdx.graphics.getHeight());
+        if (getY() <= Gdx.graphics.getHeight()/5) {
+            setY(Gdx.graphics.getHeight()/5);
         } else {
             MoveByAction moveDownAction = new MoveByAction();
             moveDownAction.setAmount(0, -this.velocidad);
@@ -212,9 +212,11 @@ public class Personaje extends Actor {
     }
 
     public void moveRight(float delta) {
-        if (getX() >= Gdx.graphics.getWidth()) {
-            setX(-getWidth());
-        } else {
+        if (getX() >= Gdx.graphics.getWidth()-this.sprite.getWidth()) {
+            setX(Gdx.graphics.getWidth()-this.sprite.getWidth());
+        }  else {
+            this.sprite = new Sprite(new Texture("personajes/polloderecha.png"));
+            sprite.setBounds(sprite.getX(), sprite.getY(), Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 7);
             MoveByAction moveRightAction = new MoveByAction();
             moveRightAction.setAmount(this.velocidad, 0);
             moveRightAction.setDuration(delta);
@@ -252,18 +254,36 @@ public class Personaje extends Actor {
         addAction(new ParallelAction(parpadear, escalarseDanio));
     }
 
-    public void movimientoFuego() {
-        if (getY() <= -getHeight()) {
-            MoveByAction moveUpAction = new MoveByAction();
-            moveUpAction.setAmount(0, this.velocidad);
-            moveUpAction.setDuration(1);
-            addAction(moveUpAction);
+    public void movimientoEnemigo() {
+        if (getX() <= -getWidth()) {
+            setX(Gdx.graphics.getWidth());
         } else {
+            MoveByAction moveLeftAction = new MoveByAction();
+            moveLeftAction.setAmount(-this.velocidad, 0);
+            moveLeftAction.setDuration(this.velocidad);
+            addAction(moveLeftAction);
+        }
+    }
+
+    public void movimientoSierra() {
+        if (getY() >= Gdx.graphics.getHeight() - this.sprite.getHeight()) {
+            setY(Gdx.graphics.getHeight() - this.sprite.getHeight());
+        } else if (getY() >= Gdx.graphics.getHeight() / 5 - this.sprite.getHeight()) {
             MoveByAction moveDownAction = new MoveByAction();
             moveDownAction.setAmount(0, -this.velocidad);
             moveDownAction.setDuration(1);
             addAction(moveDownAction);
+        } else {
+            MoveByAction moveUpAction = new MoveByAction();
+            moveUpAction.setAmount(0, this.velocidad);
+            moveUpAction.setDuration(2);
+            addAction(moveUpAction);
         }
+    }
+
+    public int disminuirVida(){
+        this.vida -= 20;
+        return vida;
     }
 }
 

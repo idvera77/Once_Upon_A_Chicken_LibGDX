@@ -5,15 +5,14 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.ivan.popollo_adventures.Juego;
 
-
-public class Pantalla3 extends BaseScreen {
+public class GameOver extends BaseScreen {
     private Sound sound;
 
-    public Pantalla3(Juego game) {
+    public GameOver(Juego game) {
         super(game);
-        this.fondo=new Texture("fondospantalla/cementerio.png");
-        sound = Gdx.audio.newSound(Gdx.files.internal("sonidos/cementerio.mp3"));
-        sound.play(0.2f);
+        this.fondo=new Texture("fondospantalla/montaña.png");
+        sound = Gdx.audio.newSound(Gdx.files.internal("sonidos/nieve.mp3"));
+        sound.play(0.3f);
     }
 
     @Override
@@ -23,7 +22,7 @@ public class Pantalla3 extends BaseScreen {
             if(popollo.getObjetos().size()>= 1){
                 puerta.getSound().play(1f);
                 sound.stop();
-                game.setPantallaActual(new Pantalla1(this.game));
+                game.setPantallaActual(new Pantalla3(this.game));
             }else{
 
             }

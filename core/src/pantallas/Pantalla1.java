@@ -15,23 +15,18 @@ public class Pantalla1 extends BaseScreen {
         super(game);
         this.fondo=new Texture("fondospantalla/bosque.png");
         sound = Gdx.audio.newSound(Gdx.files.internal("sonidos/bosque.mp3"));
-        sound.play(0.3f);
+        sound.play(0.2f);
     }
 
     @Override
     public void render(float delta) {
         super.render(delta);
-        Popollo popollo = (Popollo) pantalla.getActors().get(0);
-        if(popollo.getY()<0){
-            popollo.moverAPixel(popollo.getX(),0);
-        }else if(popollo.getY()>= Gdx.graphics.getHeight()){
-            popollo.moverAPixel(popollo.getX(),Gdx.graphics.getHeight());
-        }else if(popollo.getX()>=Gdx.graphics.getWidth()){
-            sound.stop();
-            game.setPantallaActual(new Pantalla2(this.game));
-        }else if(popollo.getX()<0){
-            sound.stop();
-            game.setPantallaActual(new Pantalla3(this.game));
+        if (popollo.checkCollision(puerta)) {
+            if(popollo.getObjetos().size()>= 1){
+                puerta.getSound().play(1f);
+                sound.stop();
+                game.setPantallaActual(new Pantalla2(this.game));
+            }
         }
     }
 

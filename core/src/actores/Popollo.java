@@ -7,12 +7,12 @@ public class Popollo extends Personaje {
     private Sound sound;
 
     public Popollo() {
-        super("personajes/pollo.png");
+        super("personajes/polloderecha.png");
         sound = Gdx.audio.newSound(Gdx.files.internal("sonidos/daño.mp3"));
     }
 
     public Popollo(float x, float y) {
-        super("personajes/pollo.png", x, y);
+        super("personajes/polloderecha.png", x, y);
     }
 
     public Sound getSound() {
