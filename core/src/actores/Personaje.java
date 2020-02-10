@@ -8,9 +8,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
-import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.ParallelAction;
-import com.badlogic.gdx.scenes.scene2d.actions.ScaleByAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
 import java.util.ArrayList;
@@ -30,22 +28,19 @@ public class Personaje extends Actor {
     //Constructor de Heroe
     public Personaje(String rutaTextura) {
         this.moving = new HashSet<Integer>();
-        velocidad = 5;
         vida = 100;
         vidaMaxima = 100;
         puntuacion = 1000;
         colliding = false;
         objetos = new ArrayList<>();
         sprite = new Sprite(new Texture(rutaTextura));
-        sprite.setBounds(50, Gdx.graphics.getHeight()/5, Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 7);
+        sprite.setBounds(sprite.getX(), sprite.getY(), Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 7);
         this.setSize(Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 7);
-        this.setPosition(50, Gdx.graphics.getHeight()/5);
+        this.setPosition(0, Gdx.graphics.getHeight()/23*4);
         this.setOrigin(this.sprite.getWidth() / 2, this.sprite.getHeight() / 2);
         sprite.setOrigin(this.getOriginX(), this.getOriginY());
-
         addListener(new EscuchadorJugador(this));
     }
-
 
     public Personaje(String rutaTextura, float x, float y) {
         this.moving = new HashSet<Integer>();
@@ -143,12 +138,6 @@ public class Personaje extends Actor {
         return colliding;
     }
 
-    //MOVIMIENTO
-    public void moverAPixel(float x, float y) {
-        this.setPosition(x, y);
-        sprite.setPosition(x, y);
-    }
-
     public HashSet<Integer> getMoving() {
         return moving;
     }
@@ -165,16 +154,10 @@ public class Personaje extends Actor {
     public void act(float delta) {
         super.act(delta);
         if (moving.contains(0)) {
-            moveUp(delta);
+            moveLeft(delta);
         }
         if (moving.contains(1)) {
             moveRight(delta);
-        }
-        if (moving.contains(2)) {
-            moveDown(delta);
-        }
-        if (moving.contains(3)) {
-            moveLeft(delta);
         }
     }
 
@@ -185,31 +168,9 @@ public class Personaje extends Actor {
             this.sprite = new Sprite(new Texture("personajes/polloizquierda.png"));
             sprite.setBounds(sprite.getX(), sprite.getY(), Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 7);
             MoveByAction moveLeftAction = new MoveByAction();
-            moveLeftAction.setAmount(-this.velocidad, 0);
+            moveLeftAction.setAmount(-5, 0);
             moveLeftAction.setDuration(delta);
             addAction(moveLeftAction);
-        }
-    }
-
-    public void moveUp(float delta) {
-        if (getY() >= Gdx.graphics.getHeight()-this.sprite.getHeight()) {
-            setY(Gdx.graphics.getHeight()-this.sprite.getHeight());
-        } else {
-            MoveByAction moveUpAction = new MoveByAction();
-            moveUpAction.setAmount(0, this.velocidad);
-            moveUpAction.setDuration(delta);
-            addAction(moveUpAction);
-        }
-    }
-
-    public void moveDown(float delta) {
-        if (getY() <= Gdx.graphics.getHeight()/5) {
-            setY(Gdx.graphics.getHeight()/5);
-        } else {
-            MoveByAction moveDownAction = new MoveByAction();
-            moveDownAction.setAmount(0, -this.velocidad);
-            moveDownAction.setDuration(delta);
-            addAction(moveDownAction);
         }
     }
 
@@ -220,16 +181,21 @@ public class Personaje extends Actor {
             this.sprite = new Sprite(new Texture("personajes/polloderecha.png"));
             sprite.setBounds(sprite.getX(), sprite.getY(), Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 7);
             MoveByAction moveRightAction = new MoveByAction();
-            moveRightAction.setAmount(this.velocidad, 0);
+            moveRightAction.setAmount(5, 0);
             moveRightAction.setDuration(delta);
             addAction(moveRightAction);
         }
     }
 
-    public void recibirDaño() {
-        MoveToAction mta = new MoveToAction();
-        mta.setPosition(getX() - 40, getY());
-        mta.setDuration(0);
+    public void salto() {
+        SequenceAction salto = new SequenceAction(
+                Actions.moveBy(0, Gdx.graphics.getHeight()/33*9, 0.4f),
+                Actions.moveBy(0, -Gdx.graphics.getHeight()/33*9, 0.4f)
+        );
+        addAction(salto);
+    }
+
+    public int recibirDaño() {
         SequenceAction parpadear = new SequenceAction(new SequenceAction(
                 Actions.alpha(0.1f, 0.2f),
                 Actions.alpha(1f, 0.2f),
@@ -240,44 +206,27 @@ public class Personaje extends Actor {
                 Actions.alpha(1f, 0.2f),
                 Actions.alpha(0.1f, 0.2f),
                 Actions.alpha(1f, 0.2f)));
-        ScaleByAction danioDisminuir = new ScaleByAction();
-        danioDisminuir.setAmount(-1f, -0.5f);
-        danioDisminuir.setDuration(0.4f);
-        ScaleByAction danioDisminuir2 = new ScaleByAction();
-        danioDisminuir2.setAmount(+0.5f, -0.5f);
-        danioDisminuir2.setDuration(0.4f);
-        ScaleByAction danioAumentar = new ScaleByAction();
-        danioAumentar.setAmount(+0.5f, +0.5f);
-        danioAumentar.setDuration(0.4f);
-        ScaleByAction danioAumentar2 = new ScaleByAction();
-        danioAumentar2.setAmount(+0, +0.5f);
-        danioAumentar2.setDuration(0.4f);
-        SequenceAction escalarseDanio = new SequenceAction(mta, danioDisminuir, danioDisminuir2, danioAumentar, danioAumentar2);
-        addAction(new ParallelAction(parpadear, escalarseDanio));
+        addAction(new ParallelAction( parpadear));
+        this.vida -= 20;
+        return vida;
     }
 
     public void movimientoEnemigo() {
-        if (getX() <= -getWidth()) {
-            setX(Gdx.graphics.getWidth());
-        } else {
-            MoveByAction moveLeftAction = new MoveByAction();
-            moveLeftAction.setAmount(-this.velocidad, 0);
-            moveLeftAction.setDuration(this.velocidad);
-            addAction(moveLeftAction);
-        }
+        MoveByAction moveLeftAction = new MoveByAction();
+        moveLeftAction.setAmount(-this.velocidad, 0);
+        moveLeftAction.setDuration(this.velocidad);
+        addAction(moveLeftAction);
     }
 
     public void movimientoSierra() {
-        if (getY() >= Gdx.graphics.getHeight() - this.sprite.getHeight()) {
-            setY(Gdx.graphics.getHeight() - this.sprite.getHeight());
-        } else if (getY() >= Gdx.graphics.getHeight() / 5 - this.sprite.getHeight()) {
+        if (getY() >= Gdx.graphics.getHeight()/33*6 - this.sprite.getHeight()) {
             MoveByAction moveDownAction = new MoveByAction();
-            moveDownAction.setAmount(0, -this.velocidad);
+            moveDownAction.setAmountY(-10);
             moveDownAction.setDuration(1);
             addAction(moveDownAction);
         } else {
             MoveByAction moveUpAction = new MoveByAction();
-            moveUpAction.setAmount(0, this.velocidad);
+            moveUpAction.setAmountY(10);
             moveUpAction.setDuration(2);
             addAction(moveUpAction);
         }
@@ -285,17 +234,10 @@ public class Personaje extends Actor {
 
     public void ataqueDisparo() {
         MoveByAction moveRightAction = new MoveByAction();
-        moveRightAction.setAmount(1000, 0);
+        moveRightAction.setAmountX(Gdx.graphics.getWidth());
         moveRightAction.setDuration(1);
         addAction(moveRightAction);
     }
-
-    public int disminuirVida(){
-        this.vida -= 20;
-        return vida;
-    }
-
-
 }
 
 

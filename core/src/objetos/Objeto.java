@@ -11,13 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
 public class Objeto extends Actor {
     protected Sprite sprite;
 
-    public Objeto(String rutaTextura) {
-        sprite = new Sprite(new Texture(rutaTextura));
-        sprite.setBounds(0, 0, Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 10);
-        this.setOrigin(this.sprite.getWidth() / 2, this.sprite.getHeight() / 2);
-        this.setSize(Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 10);
-        sprite.setOrigin(this.getOriginX(), this.getOriginY());
-    }
 
     public Rectangle getHitBox() {
         return sprite.getBoundingRectangle();
@@ -33,7 +26,7 @@ public class Objeto extends Actor {
      */
     public Objeto(String rutaTextura, float x, float y, float w, float h) {
         sprite = new Sprite(new Texture(rutaTextura));
-        sprite.setBounds(x, y, w, h);
+        sprite.setBounds(sprite.getX(), sprite.getY(), w, h);
         this.setSize(w, h);
         this.setPosition(x, y);
         this.setOrigin(this.sprite.getWidth() / 2, this.sprite.getHeight() / 2);
@@ -67,4 +60,6 @@ public class Objeto extends Actor {
         moveRightAction.setDuration(1);
         addAction(moveRightAction);
     }
+
+
 }

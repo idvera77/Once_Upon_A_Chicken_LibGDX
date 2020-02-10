@@ -17,17 +17,14 @@ public class EscuchadorJugador extends InputListener {
     @Override
     public boolean keyDown(InputEvent event, int keycode) {
         switch (keycode) {
+            case Input.Keys.A:
+                jugador.startMoving(0);
+                break;
             case Input.Keys.D:
                 jugador.startMoving(1);
                 break;
-            case Input.Keys.S:
-                jugador.startMoving(2);
-                break;
-            case Input.Keys.A:
-                jugador.startMoving(3);
-                break;
-            case Input.Keys.W:
-                jugador.startMoving(0);
+            case Input.Keys.SPACE:
+                jugador.salto();
                 break;
             case Input.Keys.E:
                 jugador.ataqueDisparo();
@@ -39,17 +36,10 @@ public class EscuchadorJugador extends InputListener {
     @Override
     public boolean keyUp(InputEvent event, int keycode) {
         switch (keycode) {
-            case Input.Keys.W:
+            case Input.Keys.A:
                 jugador.stopMoving(0);
                 break;
-            case Input.Keys.A:
-                jugador.stopMoving(3);
-                break;
-            case Input.Keys.S:
-                jugador.stopMoving(2);
-                break;
             case Input.Keys.D:
-                //Establezco que deje de moverse.
                 jugador.stopMoving(1);
                 break;
         }
@@ -58,13 +48,12 @@ public class EscuchadorJugador extends InputListener {
 
     @Override
     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-        if(x < Gdx.graphics.getWidth()/3){
-            jugador.startMoving(3);
-        }
-        if(x > Gdx.graphics.getWidth()/3*2){
-            jugador.startMoving(1);
-        }
+        jugador.startMoving(1);
         return super.touchDown(event, x, y, pointer, button);
     }
 
+    @Override
+    public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+        jugador.stopMoving(1);
+    }
 }

@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -164,13 +165,13 @@ public abstract class BaseScreen implements Screen {
         if (popollo.checkCollision(enemigoTerrestre)) {
             recibirGolpe();
             enemigoTerrestre.addAction(Actions.removeActor());
-            enemigoTerrestre = new Cuervo(Gdx.graphics.getWidth() + popollo.getX()*1, Gdx.graphics.getHeight()/5);
+            enemigoTerrestre = new Cuervo(Gdx.graphics.getWidth() + popollo.getX()*1, Gdx.graphics.getHeight()/23*4);
             pantalla.addActor(enemigoTerrestre);
         }
         if (popollo.checkCollision(sierra)) {
             recibirGolpe();
             sierra.addAction(Actions.removeActor());
-            sierra = new Sierra(Gdx.graphics.getWidth()/10 * 2, 0-sierra.getY()*3);
+            sierra = new Sierra(Gdx.graphics.getWidth()/31 * 7, Gdx.graphics.getWidth()/31 * 1 - popollo.getY()*5);
             pantalla.addActor(sierra);
 
             magia = new Magia(popollo.getX(), popollo.getY());
@@ -181,11 +182,8 @@ public abstract class BaseScreen implements Screen {
             }
         }
         if(magia.checkCollision(enemigoTerrestre)){
-            magia.clearActions();
-            magia.remove();
-            magia = new Magia(0,0);
             enemigoTerrestre.addAction(Actions.removeActor());
-            enemigoTerrestre = new Cuervo(Gdx.graphics.getWidth() + popollo.getX()*1, Gdx.graphics.getHeight()/5);
+            enemigoTerrestre = new Cuervo(Gdx.graphics.getWidth() + popollo.getX()*1, Gdx.graphics.getHeight()/23*4);
             pantalla.addActor(enemigoTerrestre);
         }
         if (popollo.getVida() <= 0) {
@@ -196,9 +194,9 @@ public abstract class BaseScreen implements Screen {
         }
 
         //Movimiento enemigo
-        if(enemigoTerrestre.getX()  <= 0){
+        if(enemigoTerrestre.getX()+enemigoTerrestre.getWidth()  <= 0){
             enemigoTerrestre.remove();
-            enemigoTerrestre = new Cuervo(Gdx.graphics.getWidth() + popollo.getX()*1, Gdx.graphics.getHeight()/5);
+            enemigoTerrestre = new Cuervo(Gdx.graphics.getWidth() + popollo.getX()*1, Gdx.graphics.getHeight()/23*4);
             pantalla.addActor(enemigoTerrestre);
         }
         enemigoTerrestre.movimientoEnemigo();
@@ -228,13 +226,11 @@ public abstract class BaseScreen implements Screen {
     @Override
     public void dispose() {
         pantalla.dispose();
-
     }
 
     public void recibirGolpe(){
         popollo.getSound().play(1f);
         popollo.recibirDaño();
-        popollo.disminuirVida();
         barraVida.setValue(popollo.getVida());
     }
 }

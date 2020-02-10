@@ -5,8 +5,6 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.ivan.popollo_adventures.Juego;
 
-import java.util.Random;
-
 import actores.Cuervo;
 import actores.Sierra;
 import objetos.GemaAzul;
@@ -23,32 +21,25 @@ public class Pantalla1 extends BaseScreen {
         this.sound = Gdx.audio.newSound(Gdx.files.internal("sonidos/bosque.mp3"));
         sound.play(0.2f);
         //Añadimos los enemigos
-        enemigoTerrestre = new Cuervo(Gdx.graphics.getWidth()+popollo.getX()*3, Gdx.graphics.getHeight()/5);
+        enemigoTerrestre = new Cuervo(Gdx.graphics.getWidth()+popollo.getX()*3, Gdx.graphics.getHeight()/23*4);
         pantalla.addActor(enemigoTerrestre);
-        sierra = new Sierra(Gdx.graphics.getWidth()/10 * 2, 0 - popollo.getY()*3);
+        sierra = new Sierra(Gdx.graphics.getWidth()/31 * 7, Gdx.graphics.getWidth()/31 * 1 - popollo.getY()*5);
         pantalla.addActor(sierra);
 
         //Añadimos los objetos
         //Añado una llave
-        Random r = new Random();
-        //float posXLlave = (float) r.nextInt(Gdx.graphics.getWidth() / 10 * 9);
-        //float posYLlave = (float) r.nextInt(Gdx.graphics.getHeight() / 10 * 9);
-        llave = new Llave(Gdx.graphics.getWidth()/10 * 1, Gdx.graphics.getHeight()/ 10 * 5);
+        llave = new Llave(Gdx.graphics.getWidth()/31 * 23, Gdx.graphics.getHeight()/ 23 * 11);
         pantalla.addActor(llave);
 
         //Añado las gemas
-        //float posXAzul = (float) r.nextInt(Gdx.graphics.getWidth() / 10 * 9);
-        //float posYAzul = (float) r.nextInt(Gdx.graphics.getHeight() / 10 * 9);
-        gemaAzul = new GemaAzul(Gdx.graphics.getWidth()/10 * 9, Gdx.graphics.getHeight()/ 10 * 7);
+        gemaAzul = new GemaAzul(Gdx.graphics.getWidth()/31 * 26, Gdx.graphics.getHeight()/ 23 * 6);
         pantalla.addActor(gemaAzul);
 
-        //float posXRoja = (float) r.nextInt(Gdx.graphics.getWidth() / 10 * 9);
-        //float posYRoja = (float) r.nextInt(Gdx.graphics.getHeight() / 10 * 9);
-        gemaRoja = new GemaRoja(Gdx.graphics.getWidth()/ 10 * 7, Gdx.graphics.getHeight()/ 10 * 5);
+        gemaRoja = new GemaRoja(Gdx.graphics.getWidth()/ 31 * 29, Gdx.graphics.getHeight()/ 23 * 6);
         pantalla.addActor(gemaRoja);
 
         //Añado la salida del nivel
-        puerta = new Puerta(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/5);
+        puerta = new Puerta(Gdx.graphics.getWidth()/31 * 19, Gdx.graphics.getHeight()/23 * 11);
         pantalla.addActor(puerta);
         puerta.toBack();
     }

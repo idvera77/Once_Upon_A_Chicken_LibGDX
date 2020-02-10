@@ -8,7 +8,7 @@ public class Puerta extends Objeto {
     private Sound sound;
 
     public Puerta(float x, float y) {
-        super("objetos/puerta.png", x, y, Gdx.graphics.getWidth()/6, Gdx.graphics.getHeight()/6);
+        super("objetos/puerta.png", x, y, Gdx.graphics.getWidth()/15, Gdx.graphics.getHeight()/15);
         sound = Gdx.audio.newSound(Gdx.files.internal("sonidos/puerta.mp3"));
     }
 
