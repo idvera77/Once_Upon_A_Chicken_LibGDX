@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
 
 public class Objeto extends Actor {
     protected Sprite sprite;
@@ -57,5 +58,13 @@ public class Objeto extends Actor {
     public void reduce() {
         this.scaleBy(-0.5f);
         sprite.scale(-0.5f);
+    }
+
+
+    public void ataqueDisparo() {
+        MoveByAction moveRightAction = new MoveByAction();
+        moveRightAction.setAmount(1000, 0);
+        moveRightAction.setDuration(1);
+        addAction(moveRightAction);
     }
 }

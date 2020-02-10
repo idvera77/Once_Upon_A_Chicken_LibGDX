@@ -59,6 +59,8 @@ public class Personaje extends Actor {
         sprite.setOrigin(this.getOriginX(), this.getOriginY());
     }
 
+
+
     public int getVida() {
         return vida;
     }
@@ -281,10 +283,19 @@ public class Personaje extends Actor {
         }
     }
 
+    public void ataqueDisparo() {
+        MoveByAction moveRightAction = new MoveByAction();
+        moveRightAction.setAmount(1000, 0);
+        moveRightAction.setDuration(1);
+        addAction(moveRightAction);
+    }
+
     public int disminuirVida(){
         this.vida -= 20;
         return vida;
     }
+
+
 }
 
 

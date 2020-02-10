@@ -2,13 +2,13 @@ package actores;
 
 import com.badlogic.gdx.audio.Sound;
 
-public class PolloMalvado extends Personaje {
+public class Cuervo extends Personaje {
 
-    public PolloMalvado() {
+    public Cuervo() {
         super("personajes/cuervo.png");
     }
 
-    public PolloMalvado(float x, float y) {
+    public Cuervo(float x, float y) {
         super("personajes/cuervo.png", x, y);
     }
 }

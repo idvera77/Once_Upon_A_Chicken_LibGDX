@@ -3,6 +3,7 @@ package pantallas;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -18,9 +19,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.ivan.popollo_adventures.Juego;
 
-import java.util.Random;
-
-import actores.PolloMalvado;
+import actores.Cuervo;
+import actores.Magia;
 import actores.Popollo;
 import actores.Sierra;
 import objetos.GemaAzul;
@@ -33,63 +33,35 @@ public abstract class BaseScreen implements Screen {
     protected Juego game;
     protected Stage pantalla;
     protected Popollo popollo;
-    protected PolloMalvado enemigoTerrestre;
+    protected Magia magia;
+    protected Cuervo enemigoTerrestre;
     protected Sierra sierra;
     protected Texture fondo;
     protected Llave llave;
     protected GemaAzul gemaAzul;
-    protected GemaRoja gemaRoja;
+    protected GemaRoja gemaRoja, gemaAtaque;
     protected Puerta puerta;
     protected ProgressBar barraVida;
-    private FreeTypeFontGenerator fontGenerator;
-    private FreeTypeFontGenerator.FreeTypeFontParameter fontParameter;
-    private BitmapFont font;
+    protected FreeTypeFontGenerator fontGenerator;
+    protected FreeTypeFontGenerator.FreeTypeFontParameter fontParameter;
+    protected BitmapFont font;
     protected Label textoPuntuacion, textoGameOver, textoLlave;
-    private Label.LabelStyle textStyle;
+    protected Label.LabelStyle textStyle;
+    protected Sound sound;
     protected int puntuacion;
-
 
 
     public BaseScreen(Juego juego) {
         //Creando la base del juego
         game = juego;
         pantalla = new Stage(new FillViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
-
         Gdx.input.setInputProcessor(pantalla);
+
         //Añadiendo los actores
         //Primero el heroe
         popollo = new Popollo();
+        magia = new Magia();
         pantalla.addActor(popollo);
-
-        //Añadimos los enemigos
-        enemigoTerrestre = new PolloMalvado(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()/5);
-        pantalla.addActor(enemigoTerrestre);
-        sierra = new Sierra(Gdx.graphics.getWidth()/10 * 2, 0 - popollo.getY()*3);
-        pantalla.addActor(sierra);
-
-        //Añadimos los objetos
-        //Añado una llave
-        Random r = new Random();
-        //float posXLlave = (float) r.nextInt(Gdx.graphics.getWidth() / 10 * 9);
-        //float posYLlave = (float) r.nextInt(Gdx.graphics.getHeight() / 10 * 9);
-        llave = new Llave(Gdx.graphics.getWidth()/10 * 1, Gdx.graphics.getHeight()/ 10 * 5);
-        pantalla.addActor(llave);
-
-        //Añado las gemas
-        //float posXAzul = (float) r.nextInt(Gdx.graphics.getWidth() / 10 * 9);
-        //float posYAzul = (float) r.nextInt(Gdx.graphics.getHeight() / 10 * 9);
-        gemaAzul = new GemaAzul(Gdx.graphics.getWidth()/10 * 9, Gdx.graphics.getHeight()/ 10 * 7);
-        pantalla.addActor(gemaAzul);
-
-        //float posXRoja = (float) r.nextInt(Gdx.graphics.getWidth() / 10 * 9);
-        //float posYRoja = (float) r.nextInt(Gdx.graphics.getHeight() / 10 * 9);
-        gemaRoja = new GemaRoja(Gdx.graphics.getWidth()/ 10 * 7, Gdx.graphics.getHeight()/ 10 * 5);
-        pantalla.addActor(gemaRoja);
-
-        //Añado la salida del nivel
-        puerta = new Puerta(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/5);
-        pantalla.addActor(puerta);
-        puerta.toBack();
 
         //Añadimos el texto a mostrar, en este juego la puntuacion obtenida.
         fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("04B_20__.TTF"));
@@ -140,12 +112,11 @@ public abstract class BaseScreen implements Screen {
         barraVida.getPercent();
         barraVida.setAnimateDuration(0.25f);
         barraVida.setPosition(20, Gdx.graphics.getHeight()-60);
-
         pantalla.addActor(barraVida);
 
         //Establezco que dentro de esa pantalla, voy a mover al actor, el
         //Primero que se insertó.
-        pantalla.setKeyboardFocus(pantalla.getActors().get(1));
+        pantalla.setKeyboardFocus(pantalla.getActors().get(0));
         pantalla.setDebugAll(true);
     }
 
@@ -166,6 +137,7 @@ public abstract class BaseScreen implements Screen {
         pantalla.getBatch().setColor(pantalla.getBatch().getColor().r, pantalla.getBatch().getColor().g, pantalla.getBatch().getColor().b, 0.5f);
         pantalla.act(delta); //Realizamos las acciones dibujando el tiempo transcurrido entre frame y frame
         pantalla.draw();
+
 
         if (popollo.checkCollision(llave)) {
             llave.reduce();
@@ -192,7 +164,7 @@ public abstract class BaseScreen implements Screen {
         if (popollo.checkCollision(enemigoTerrestre)) {
             recibirGolpe();
             enemigoTerrestre.addAction(Actions.removeActor());
-            enemigoTerrestre = new PolloMalvado(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()/5);
+            enemigoTerrestre = new Cuervo(Gdx.graphics.getWidth() + popollo.getX()*1, Gdx.graphics.getHeight()/5);
             pantalla.addActor(enemigoTerrestre);
         }
         if (popollo.checkCollision(sierra)) {
@@ -200,6 +172,21 @@ public abstract class BaseScreen implements Screen {
             sierra.addAction(Actions.removeActor());
             sierra = new Sierra(Gdx.graphics.getWidth()/10 * 2, 0-sierra.getY()*3);
             pantalla.addActor(sierra);
+
+            magia = new Magia(popollo.getX(), popollo.getY());
+            pantalla.addActor(magia);
+            magia.ataqueDisparo();
+            if(magia.getX() > Gdx.graphics.getWidth()){
+              magia.remove();
+            }
+        }
+        if(magia.checkCollision(enemigoTerrestre)){
+            magia.clearActions();
+            magia.remove();
+            magia = new Magia(0,0);
+            enemigoTerrestre.addAction(Actions.removeActor());
+            enemigoTerrestre = new Cuervo(Gdx.graphics.getWidth() + popollo.getX()*1, Gdx.graphics.getHeight()/5);
+            pantalla.addActor(enemigoTerrestre);
         }
         if (popollo.getVida() <= 0) {
             textoGameOver.setVisible(true);
@@ -211,7 +198,7 @@ public abstract class BaseScreen implements Screen {
         //Movimiento enemigo
         if(enemigoTerrestre.getX()  <= 0){
             enemigoTerrestre.remove();
-            enemigoTerrestre = new PolloMalvado(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()/5);
+            enemigoTerrestre = new Cuervo(Gdx.graphics.getWidth() + popollo.getX()*1, Gdx.graphics.getHeight()/5);
             pantalla.addActor(enemigoTerrestre);
         }
         enemigoTerrestre.movimientoEnemigo();
@@ -241,13 +228,13 @@ public abstract class BaseScreen implements Screen {
     @Override
     public void dispose() {
         pantalla.dispose();
+
     }
 
     public void recibirGolpe(){
+        popollo.getSound().play(1f);
         popollo.recibirDaño();
         popollo.disminuirVida();
         barraVida.setValue(popollo.getVida());
-        popollo.recibirDaño();
-        popollo.getSound().play(15.0f);
     }
 }

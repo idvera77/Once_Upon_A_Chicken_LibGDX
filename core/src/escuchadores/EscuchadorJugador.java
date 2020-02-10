@@ -2,7 +2,6 @@ package escuchadores;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 
@@ -29,6 +28,9 @@ public class EscuchadorJugador extends InputListener {
                 break;
             case Input.Keys.W:
                 jugador.startMoving(0);
+                break;
+            case Input.Keys.E:
+                jugador.ataqueDisparo();
                 break;
         }
         return super.keyDown(event, keycode);
