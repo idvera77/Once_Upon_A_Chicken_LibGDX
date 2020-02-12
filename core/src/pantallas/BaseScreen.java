@@ -176,7 +176,7 @@ public abstract class BaseScreen implements Screen {
         textoSalir = new Label("Salir", textStyle);
         textoSalir.setPosition(Gdx.graphics.getWidth() / 31 * 6, Gdx.graphics.getHeight() / 23 * 10);
         textoReintentar = new Label("Reintentar", textStyle);
-        textoReintentar.setPosition(Gdx.graphics.getWidth() / 31 * 18, Gdx.graphics.getHeight() / 23 * 10);
+        textoReintentar.setPosition(Gdx.graphics.getWidth() / 31 * 15, Gdx.graphics.getHeight() / 23 * 10);
 
         //El texto de GameOver se deja invisible y solo aparece al quedarnos a 0 de puntos de salud
         //Ademas de utilizar un estilo y tamaño diferente.

@@ -28,14 +28,14 @@ public class Pantalla1 extends BaseScreen {
         pantalla.addActor(sierra);
 
         //Añadimos la llave
-        llave = new Llave(Gdx.graphics.getWidth()/31 * 23, Gdx.graphics.getHeight()/ 23 * 11);
+        llave = new Llave(Gdx.graphics.getWidth()/31 * 28, Gdx.graphics.getHeight()/ 23 * 6);
         pantalla.addActor(llave);
 
         //Añadimos las gemas
-        gemaAzul = new GemaAzul(Gdx.graphics.getWidth()/31 * 26, Gdx.graphics.getHeight()/ 23 * 6);
+        gemaAzul = new GemaAzul(Gdx.graphics.getWidth()/31 * 4, Gdx.graphics.getHeight()/ 23 * 12);
         pantalla.addActor(gemaAzul);
 
-        gemaRoja = new GemaRoja(Gdx.graphics.getWidth()/ 31 * 29, Gdx.graphics.getHeight()/ 23 * 6);
+        gemaRoja = new GemaRoja(Gdx.graphics.getWidth()/ 31 * 13, Gdx.graphics.getHeight()/ 23 * 12);
         pantalla.addActor(gemaRoja);
 
         //Añadimos la salida del nivel y la enviamos atras para que los personajes sean visibles al pasar por ella.
