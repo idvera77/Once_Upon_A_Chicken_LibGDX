@@ -7,12 +7,12 @@ public class Magia extends Personaje{
     private Sound sound;
 
     public Magia() {
-        super("personajes/seta.png");
+        super("personajes/magia.png");
         sound = Gdx.audio.newSound(Gdx.files.internal("sonidos/daño.mp3"));
     }
 
     public Magia(float x, float y) {
-        super("personajes/seta.png", x, y);
+        super("personajes/magia.png", x, y);
     }
 
     public Sound getSound() {

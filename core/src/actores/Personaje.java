@@ -30,13 +30,13 @@ public class Personaje extends Actor {
         this.moving = new HashSet<Integer>();
         vida = 100;
         vidaMaxima = 100;
-        puntuacion = 1000;
+        puntuacion = 0;
         colliding = false;
         objetos = new ArrayList<>();
         sprite = new Sprite(new Texture(rutaTextura));
         sprite.setBounds(sprite.getX(), sprite.getY(), Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 7);
         this.setSize(Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 7);
-        this.setPosition(0, Gdx.graphics.getHeight()/23*4);
+        this.setPosition(0, Gdx.graphics.getHeight() / 23 * 4);
         this.setOrigin(this.sprite.getWidth() / 2, this.sprite.getHeight() / 2);
         sprite.setOrigin(this.getOriginX(), this.getOriginY());
         addListener(new EscuchadorJugador(this));
@@ -47,14 +47,12 @@ public class Personaje extends Actor {
         velocidad = 10;
         objetos = new ArrayList<Objeto>();
         sprite = new Sprite(new Texture(rutaTextura));
-        sprite.setBounds(x, y, Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 7);
-        this.setSize(Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 7);
+        sprite.setBounds(x, y, Gdx.graphics.getWidth() / 31 * 2, Gdx.graphics.getHeight() / 23 * 2);
+        this.setSize(Gdx.graphics.getWidth() / 31 * 2, Gdx.graphics.getHeight() / 23 * 2);
         this.setPosition(x, y); //Cambio posición del actor
         this.setOrigin(this.sprite.getWidth() / 2, this.sprite.getHeight() / 2);
         sprite.setOrigin(this.getOriginX(), this.getOriginY());
     }
-
-
 
     public int getVida() {
         return vida;
@@ -175,9 +173,9 @@ public class Personaje extends Actor {
     }
 
     public void moveRight(float delta) {
-        if (getX() >= Gdx.graphics.getWidth()-this.sprite.getWidth()) {
-            setX(Gdx.graphics.getWidth()-this.sprite.getWidth());
-        }  else {
+        if (getX() >= Gdx.graphics.getWidth() - this.sprite.getWidth()) {
+            setX(Gdx.graphics.getWidth() - this.sprite.getWidth());
+        } else {
             this.sprite = new Sprite(new Texture("personajes/polloderecha.png"));
             sprite.setBounds(sprite.getX(), sprite.getY(), Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 7);
             MoveByAction moveRightAction = new MoveByAction();
@@ -189,8 +187,8 @@ public class Personaje extends Actor {
 
     public void salto() {
         SequenceAction salto = new SequenceAction(
-                Actions.moveBy(0, Gdx.graphics.getHeight()/33*9, 0.4f),
-                Actions.moveBy(0, -Gdx.graphics.getHeight()/33*9, 0.4f)
+                Actions.moveBy(0, Gdx.graphics.getHeight() / 33 * 11, 0.3f),
+                Actions.moveBy(0, -Gdx.graphics.getHeight() / 33 * 11, 0.6f)
         );
         addAction(salto);
     }
@@ -206,7 +204,7 @@ public class Personaje extends Actor {
                 Actions.alpha(1f, 0.2f),
                 Actions.alpha(0.1f, 0.2f),
                 Actions.alpha(1f, 0.2f)));
-        addAction(new ParallelAction( parpadear));
+        addAction(new ParallelAction(parpadear));
         this.vida -= 20;
         return vida;
     }
@@ -219,7 +217,7 @@ public class Personaje extends Actor {
     }
 
     public void movimientoSierra() {
-        if (getY() >= Gdx.graphics.getHeight()/33*6 - this.sprite.getHeight()) {
+        if (getY() >= Gdx.graphics.getHeight() / 33 * 6 - this.sprite.getHeight()) {
             MoveByAction moveDownAction = new MoveByAction();
             moveDownAction.setAmountY(-10);
             moveDownAction.setDuration(1);
@@ -232,11 +230,18 @@ public class Personaje extends Actor {
         }
     }
 
-    public void ataqueDisparo() {
-        MoveByAction moveRightAction = new MoveByAction();
-        moveRightAction.setAmountX(Gdx.graphics.getWidth());
-        moveRightAction.setDuration(1);
-        addAction(moveRightAction);
+    public void ataqueDisparo(int direccion) {
+        if (direccion == 0) {
+            MoveByAction moveLeftAction = new MoveByAction();
+            moveLeftAction.setAmountX(-Gdx.graphics.getWidth());
+            moveLeftAction.setDuration(1);
+            addAction(moveLeftAction);
+        } else {
+            MoveByAction moveRightAction = new MoveByAction();
+            moveRightAction.setAmountX(Gdx.graphics.getWidth());
+            moveRightAction.setDuration(1);
+            addAction(moveRightAction);
+        }
     }
 }
 
