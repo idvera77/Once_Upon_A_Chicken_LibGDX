@@ -3,6 +3,8 @@ package pantallas;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.ivan.popollo_adventures.Juego;
 
 import java.util.Random;
@@ -12,59 +14,82 @@ import actores.Sierra;
 import objetos.GemaAzul;
 import objetos.GemaRoja;
 import objetos.Llave;
+import objetos.Pincho;
 import objetos.Puerta;
 
 
 public class Pantalla3 extends BaseScreen {
-    private Sound sound;
+    private Texture texturaObjeto;
+    private TextureRegion texturaRegion;
+    private TextureRegion[] framesTextura;
+    private Animation animacionObjeto;
+    private float duracion = 0f;
+    private static final int ANCHO = Gdx.graphics.getWidth() / 5;
+    private static final int ALTO = Gdx.graphics.getHeight() / 9;
 
     public Pantalla3(Juego game) {
         super(game);
-        this.fondo=new Texture("fondospantalla/cementerio.png");
-        sound = Gdx.audio.newSound(Gdx.files.internal("sonidos/cementerio.mp3"));
+        this.fondo = new Texture("fondospantalla/cementerio.png");
+        this.sound = Gdx.audio.newSound(Gdx.files.internal("sonidos/cementerio.mp3"));
         sound.play(0.2f);
 
-        //Añadimos los enemigos
-        enemigoTerrestre = new Cuervo(Gdx.graphics.getWidth()+popollo.getX()*3, Gdx.graphics.getHeight()/5);
+        //Añadimos los enemigos.
+        enemigoTerrestre = new Cuervo(Gdx.graphics.getWidth() + popollo.getX() * 3, Gdx.graphics.getHeight() / 23 * 4);
         pantalla.addActor(enemigoTerrestre);
-        sierra = new Sierra(Gdx.graphics.getWidth()/10 * 2, 0 - popollo.getY()*3);
+        sierra = new Sierra(Gdx.graphics.getWidth() / 31 * 7, Gdx.graphics.getWidth() / 31 * 1 - popollo.getY() * 5);
         pantalla.addActor(sierra);
+        pincho = new Pincho(Gdx.graphics.getWidth() / 31 * 15, Gdx.graphics.getWidth() / 31 * 3);
+        pantalla.addActor(pincho);
 
-        //Añadimos los objetos
-        //Añado una llave
-        Random r = new Random();
-        //float posXLlave = (float) r.nextInt(Gdx.graphics.getWidth() / 10 * 9);
-        //float posYLlave = (float) r.nextInt(Gdx.graphics.getHeight() / 10 * 9);
-        llave = new Llave(Gdx.graphics.getWidth()/10 * 1, Gdx.graphics.getHeight()/ 10 * 5);
+        //Añadimos la llave
+        llave = new Llave(Gdx.graphics.getWidth() / 31 * 10, Gdx.graphics.getHeight() / 23 * 6);
         pantalla.addActor(llave);
 
-        //Añado las gemas
-        //float posXAzul = (float) r.nextInt(Gdx.graphics.getWidth() / 10 * 9);
-        //float posYAzul = (float) r.nextInt(Gdx.graphics.getHeight() / 10 * 9);
-        gemaAzul = new GemaAzul(Gdx.graphics.getWidth()/10 * 9, Gdx.graphics.getHeight()/ 10 * 7);
+        //Añadimos las gemas
+        gemaAzul = new GemaAzul(Gdx.graphics.getWidth() / 31 * 29, Gdx.graphics.getHeight() / 23 * 6);
         pantalla.addActor(gemaAzul);
 
-        //float posXRoja = (float) r.nextInt(Gdx.graphics.getWidth() / 10 * 9);
-        //float posYRoja = (float) r.nextInt(Gdx.graphics.getHeight() / 10 * 9);
-        gemaRoja = new GemaRoja(Gdx.graphics.getWidth()/ 10 * 7, Gdx.graphics.getHeight()/ 10 * 5);
+        gemaRoja = new GemaRoja(Gdx.graphics.getWidth() / 17 * 13, Gdx.graphics.getHeight() / 23 * 12);
         pantalla.addActor(gemaRoja);
 
-        //Añado la salida del nivel
-        puerta = new Puerta(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/5);
+        //Añadimos la salida del nivel y la enviamos atras para que los personajes sean visibles al pasar por ella.
+        puerta = new Puerta(Gdx.graphics.getWidth() / 31 * 30, Gdx.graphics.getHeight() / 23 * 10);
         pantalla.addActor(puerta);
-        puerta.toBack();
+    }
+
+    @Override
+    public void show() {
+        texturaObjeto = new Texture("objetos/animacionpuerta.png");
+        texturaRegion = new TextureRegion(texturaObjeto, ANCHO, ALTO);
+        TextureRegion[][] temp = texturaRegion.split(ANCHO / 3, ALTO);
+        framesTextura = new TextureRegion[temp.length * temp[0].length];
+
+        int indice = 0;
+        for (int i = 0; i < temp.length; i++) {
+            for (int j = 0; j < temp[i].length; j++) {
+                framesTextura[indice++] = temp[i][j];
+            }
+        }
+        animacionObjeto = new Animation(0.2f, framesTextura);
     }
 
     @Override
     public void render(float delta) {
         super.render(delta);
         if (popollo.checkCollision(puerta)) {
-            if(popollo.getObjetos().size()>= 1){
+            if (popollo.getObjetos().size() >= 1) {
                 puerta.getSound().play(1f);
                 sound.stop();
-                game.setPantallaActual(new Pantalla1(this.game));
+                game.setPantallaActual(new Tienda(this.game, 3));
             }
         }
+        duracion += delta;
+        TextureRegion frame = (TextureRegion) animacionObjeto.getKeyFrame(duracion, true);
+        pantalla.getBatch().begin();
+        pantalla.getBatch().draw(frame, Gdx.graphics.getWidth() / 50 * 48, Gdx.graphics.getHeight() / 23 * 13);//posicion de la animación
+        pantalla.getBatch().end();
+        //Moviendo enemigos
+        movimientoEnemigos();
     }
 
     public Sound getSound() {

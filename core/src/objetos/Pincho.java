@@ -3,11 +3,11 @@ package objetos;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 
-public class Puerta extends Objeto {
+public class Pincho extends Objeto{
     private Sound sound;
 
-    public Puerta(float x, float y) {
-        super("objetos/puerta.png", x, y, Gdx.graphics.getWidth()/15, Gdx.graphics.getHeight()/15);
+    public Pincho(float x, float y) {
+        super("objetos/pincho.png", x, y, Gdx.graphics.getWidth()/15, Gdx.graphics.getHeight()/11);
         sound = Gdx.audio.newSound(Gdx.files.internal("sonidos/puerta.mp3"));
     }
 
@@ -15,3 +15,5 @@ public class Puerta extends Objeto {
         return sound;
     }
 }
+
+

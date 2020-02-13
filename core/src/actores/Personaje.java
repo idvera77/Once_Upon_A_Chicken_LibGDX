@@ -187,7 +187,7 @@ public class Personaje extends Actor {
 
     public void salto() {
         SequenceAction salto = new SequenceAction(
-                Actions.moveBy(0, Gdx.graphics.getHeight() / 33 * 11, 0.3f),
+                Actions.moveBy(0, Gdx.graphics.getHeight() / 33 * 11, 0.6f),
                 Actions.moveBy(0, -Gdx.graphics.getHeight() / 33 * 11, 0.6f)
         );
         addAction(salto);

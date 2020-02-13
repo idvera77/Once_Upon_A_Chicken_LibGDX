@@ -11,16 +11,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.scenes.scene2d.Action;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -29,15 +24,13 @@ import com.ivan.popollo_adventures.Juego;
 
 import actores.Cuervo;
 import actores.Magia;
-import actores.Personaje;
 import actores.Popollo;
 import actores.Sierra;
 import objetos.GemaAzul;
 import objetos.GemaRoja;
 import objetos.Llave;
-import objetos.Objeto;
+import objetos.Pincho;
 import objetos.Puerta;
-
 
 public abstract class BaseScreen implements Screen {
     protected Juego game;
@@ -46,6 +39,7 @@ public abstract class BaseScreen implements Screen {
     protected Magia magia;
     protected Cuervo enemigoTerrestre;
     protected Sierra sierra;
+    protected Pincho pincho;
     protected Texture fondo;
     protected Llave llave;
     protected GemaAzul gemaAzul;
@@ -54,11 +48,11 @@ public abstract class BaseScreen implements Screen {
     protected ProgressBar barraVida;
     protected FreeTypeFontGenerator fontGenerator;
     protected FreeTypeFontGenerator.FreeTypeFontParameter fontParameter;
-    protected BitmapFont font, fuente, fuente2, fuente3, fuente4;
-    protected Label textoPuntuacion, textoGameOver, textoLlave, textoSalir, textoReintentar;
+    protected BitmapFont font, fuente, fuente2, fuente3, fuente4, fuente5, fuente6;
+    protected Label textoPuntuacion, textoGameOver, textoLlave;
     protected Label.LabelStyle textStyle;
-    protected TextButton.TextButtonStyle estiloBoton, estiloBoton2, estiloBoton3, estiloBoton4;
-    protected TextButton boton1, boton2, boton3, boton4;
+    protected TextButton.TextButtonStyle estiloBoton, estiloBoton2, estiloBoton3, estiloBoton4, estiloBoton5, estiloBoton6;
+    protected TextButton boton1, boton2, boton3, boton4, boton5, boton6;
     protected Pixmap pixmap, pixmap2;
     protected Sound sound;
     protected int puntuacion, direccion;
@@ -72,11 +66,22 @@ public abstract class BaseScreen implements Screen {
         //Como el heroe se usara en todas las pantalla, lo creamos de inicio en esta BaseScreen.
         //Lo mismo con su ataque magico y una variable entero que usaremos para el ataque magico.
         popollo = new Popollo();
-        direccion = 1;
         magia = new Magia();
+        direccion = 1;
         pantalla.addActor(popollo);
 
         //Añadimos el estilo, tamaño e imagen que tendran los botones que aparecen en pantalla.
+        //Los parametros utilizados son el tipo de letra (ttf), ancho del borde, color y tamaño de letra
+        fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("04B_20__.TTF"));
+        fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        fontParameter.borderWidth = 2;
+        fontParameter.borderColor = Color.BLACK;
+        fontParameter.color = Color.WHITE;
+        fontParameter.size = Gdx.graphics.getWidth() / 30;
+        font = fontGenerator.generateFont(fontParameter);
+        textStyle = new Label.LabelStyle();
+        textStyle.font = font;
+
         //Boton1
         fuente = new BitmapFont();
         estiloBoton = new TextButton.TextButtonStyle();
@@ -118,6 +123,20 @@ public abstract class BaseScreen implements Screen {
         boton4.setPosition(Gdx.graphics.getWidth() / 31 * 5, 0);
         pantalla.addActor(boton4);
 
+        //Boton5
+        fuente5 = new BitmapFont();
+        estiloBoton5 = new TextButton.TextButtonStyle();
+        estiloBoton5.font = font;
+        boton5 = new TextButton("EXIT", estiloBoton5);
+        boton5.setPosition(Gdx.graphics.getWidth() / 31 * 7, Gdx.graphics.getHeight()/23*10);
+
+        //Boton6
+        fuente6 = new BitmapFont();
+        estiloBoton6 = new TextButton.TextButtonStyle();
+        estiloBoton6.font = font;
+        boton6 = new TextButton("RETRY", estiloBoton6);
+        boton6.setPosition(Gdx.graphics.getWidth() / 31 * 16, Gdx.graphics.getHeight()/23*10);
+
         //Evento de botones
         //Boton1: Inicia el movimiento hacia la izquierda
         boton1.addListener(new ClickListener() {
@@ -151,6 +170,20 @@ public abstract class BaseScreen implements Screen {
                 disparo(direccion);
             }
         });
+        //Boton5: Salir del juego
+        boton5.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+            }
+        });
+        //Boton6: Reinicia la partida
+        boton6.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setPantallaActual(new Pantalla1(game));
+            }
+        });
 
         //Añadimos el texto a mostrar, en este juego la puntuacion obtenida.
         //Los parametros utilizados son el tipo de letra (ttf), ancho del borde, color y tamaño de letra
@@ -171,12 +204,6 @@ public abstract class BaseScreen implements Screen {
         textoLlave.setPosition(Gdx.graphics.getWidth() / 31 * 18, Gdx.graphics.getHeight() / 23 * 20);
         pantalla.addActor(textoPuntuacion);
         pantalla.addActor(textoLlave);
-
-        //Estos dos textos auxiliares nos serviran de boton para decidir si abandonar el juego o continuar desde 0.
-        textoSalir = new Label("Salir", textStyle);
-        textoSalir.setPosition(Gdx.graphics.getWidth() / 31 * 6, Gdx.graphics.getHeight() / 23 * 10);
-        textoReintentar = new Label("Reintentar", textStyle);
-        textoReintentar.setPosition(Gdx.graphics.getWidth() / 31 * 15, Gdx.graphics.getHeight() / 23 * 10);
 
         //El texto de GameOver se deja invisible y solo aparece al quedarnos a 0 de puntos de salud
         //Ademas de utilizar un estilo y tamaño diferente.
@@ -252,6 +279,7 @@ public abstract class BaseScreen implements Screen {
         pantalla.draw();
 
         //Al ser un juego simple podemos dejar el apartado de colisiones de muchos enemigos y objetos en este render global.
+        //Colision con llave, la agregamos a objetos del heroe y asi avanzaremos de nivel, aumenta el contador.
         if (popollo.checkCollision(llave)) {
             llave.reduce();
             popollo.addObjeto(llave);
@@ -260,6 +288,7 @@ public abstract class BaseScreen implements Screen {
             llave = new Llave(0, 0);
             textoLlave.setText("LLAVE: 1");
         }
+        //Colision con gemas, aumenta nuestra puntuacion
         if (popollo.checkCollision(gemaRoja)) {
             gemaRoja.getSound().play(1f);
             gemaRoja.remove();
@@ -267,59 +296,57 @@ public abstract class BaseScreen implements Screen {
             popollo.setPuntuacion(popollo.getPuntuacion() + gemaRoja.getPuntuacion());
             textoPuntuacion.setText("SCORE: " + popollo.getPuntuacion());
         }
-
         if (popollo.checkCollision(gemaAzul)) {
-
             gemaAzul.getSound().play(1f);
-            gemaAzul.addAction(Actions.removeActor());
+            gemaAzul.remove();
             gemaAzul = new GemaAzul(0, 0);
             popollo.setPuntuacion(popollo.getPuntuacion() + gemaAzul.getPuntuacion());
             textoPuntuacion.setText("SCORE: " + popollo.getPuntuacion());
-
-
         }
+        //Colision con enemigo basico, recibimos daño y generamos otro enemigo para que venga en oleadas
         if (popollo.checkCollision(enemigoTerrestre)) {
             recibirGolpe();
-            enemigoTerrestre.addAction(Actions.removeActor());
+            enemigoTerrestre.remove();
             enemigoTerrestre = new Cuervo(Gdx.graphics.getWidth() + popollo.getX()*1, Gdx.graphics.getHeight()/23*4);
             pantalla.addActor(enemigoTerrestre);
         }
+        //Colision el pincho, al chocar desaparece
+        if (popollo.checkCollision(pincho)) {
+            recibirGolpe();
+            pincho.remove();
+            pincho = new Pincho(0, 0);
+        }
+        //Colision con la sierra que aparece en el suelo, vuelve a reaparecer al cabo de un tiempo
         if (popollo.checkCollision(sierra)) {
             recibirGolpe();
-            pantalla.addAction(Actions.removeActor(sierra));
+            sierra.remove();
             sierra = new Sierra(Gdx.graphics.getWidth()/31 * 7, Gdx.graphics.getWidth()/31 * 1 - popollo.getY()*5);
             pantalla.addActor(sierra);
 
         }
-
+        //Colision de nuestro disparo con el enemigo
         if(magia.checkCollision(enemigoTerrestre)){
-        enemigoTerrestre.addAction(Actions.removeActor());
-        enemigoTerrestre = new Cuervo(Gdx.graphics.getWidth() + popollo.getX()*1, Gdx.graphics.getHeight()/23*4);
-        pantalla.addActor(enemigoTerrestre);
-        magia.remove();
-        magia = new Magia(0,0);
+            enemigoTerrestre.remove();
+            enemigoTerrestre = new Cuervo(Gdx.graphics.getWidth() + popollo.getX()*1, Gdx.graphics.getHeight()/23*4);
+            pantalla.addActor(enemigoTerrestre);
+            magia.remove();
+            magia = new Magia(0,0);
         }
 
+        //Game Over cuando nuestro heroe tiene 0 de vida. Se remueven todos los actores y se activan los botones de salir o reintentar.
         if (popollo.getVida() <= 0) {
+            popollo.remove();
             enemigoTerrestre.remove();
             sierra.remove();
+            pincho.remove();
             llave.remove();
             puerta.remove();
             gemaAzul.remove();
             gemaRoja.remove();
-            pantalla.addActor(textoSalir);
-            pantalla.addActor(textoReintentar);
             textoGameOver.setVisible(true);
+            pantalla.addActor(boton5);
+            pantalla.addActor(boton6);
         }
-
-        //Movimiento enemigo
-        if(enemigoTerrestre.getX()+enemigoTerrestre.getWidth()  <= 0){
-            enemigoTerrestre.remove();
-            enemigoTerrestre = new Cuervo(Gdx.graphics.getWidth() + popollo.getX()*1, Gdx.graphics.getHeight()/23*4);
-            pantalla.addActor(enemigoTerrestre);
-        }
-        enemigoTerrestre.movimientoEnemigo();
-        sierra.movimientoSierra();
     }
 
     @Override
@@ -357,10 +384,17 @@ public abstract class BaseScreen implements Screen {
         magia = new Magia(popollo.getX(), popollo.getY());
         pantalla.addActor(magia);
         magia.ataqueDisparo(direccion);
-        if(magia.getX() > Gdx.graphics.getWidth()) {
-            magia.remove();
-        }else if(magia.getX() < -Gdx.graphics.getWidth()){
-            magia.remove();
+    }
+
+    public void movimientoEnemigos(){
+        //Movimiento enemigo
+        enemigoTerrestre.movimientoEnemigo();
+        sierra.movimientoSierra();
+        //Si este desaparece de la pantalla vuelve a generarse otro.
+        if(enemigoTerrestre.getX()+enemigoTerrestre.getWidth()  <= 0){
+            enemigoTerrestre.remove();
+            enemigoTerrestre = new Cuervo(Gdx.graphics.getWidth() + popollo.getX()*1, Gdx.graphics.getHeight()/23*4);
+            pantalla.addActor(enemigoTerrestre);
         }
     }
 }

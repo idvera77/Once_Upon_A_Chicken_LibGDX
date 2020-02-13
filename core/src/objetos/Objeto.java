@@ -11,11 +11,9 @@ import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
 public class Objeto extends Actor {
     protected Sprite sprite;
 
-
     public Rectangle getHitBox() {
         return sprite.getBoundingRectangle();
     }
-
     /**
      * Constructor con todos los parámetros de objeto
      * @param rutaTextura la textura que usamos
