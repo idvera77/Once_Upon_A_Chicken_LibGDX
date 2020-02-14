@@ -7,9 +7,8 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.ivan.popollo_adventures.Juego;
 
-import java.util.Random;
-
 import actores.Cuervo;
+import actores.Popollo;
 import actores.Sierra;
 import objetos.GemaAzul;
 import objetos.GemaRoja;
@@ -27,11 +26,12 @@ public class Pantalla2 extends BaseScreen {
     private static final int ANCHO = Gdx.graphics.getWidth() / 5;
     private static final int ALTO = Gdx.graphics.getHeight() / 9;
 
-    public Pantalla2(Juego game) {
-        super(game);
+    public Pantalla2(Juego game, Popollo popollo) {
+        super(game, popollo);
         this.fondo = new Texture("fondospantalla/montaña.png");
-        this.sound = Gdx.audio.newSound(Gdx.files.internal("sonidos/nieve.mp3"));
-        sound.play(0.2f);
+        this.musica = Gdx.audio.newMusic(Gdx.files.internal("sonidos/nieve.mp3"));
+        musica.setVolume(0.2f);
+        musica.play();
 
         //Añadimos los enemigos.
         enemigoTerrestre = new Cuervo(Gdx.graphics.getWidth() + popollo.getX() * 3, Gdx.graphics.getHeight() / 23 * 4);
@@ -77,10 +77,11 @@ public class Pantalla2 extends BaseScreen {
     public void render(float delta) {
         super.render(delta);
         if (popollo.checkCollision(puerta)) {
-            if (popollo.getObjetos().size() >= 1) {
+            if (popollo.getObjetos().size() == 1) {
+                popollo.getObjetos().remove(0);
                 puerta.getSound().play(1f);
-                sound.stop();
-                game.setPantallaActual(new Tienda(this.game, 2));
+                musica.stop();
+                game.setPantallaActual(new Tienda(this.game, popollo, 2));
             }
         }
         duracion += delta;
@@ -88,8 +89,17 @@ public class Pantalla2 extends BaseScreen {
         pantalla.getBatch().begin();
         pantalla.getBatch().draw(frame, 0, Gdx.graphics.getHeight() / 23 * 14);//posicion de la animación
         pantalla.getBatch().end();
+
         //Moviendo enemigos
         movimientoEnemigos();
+
+        //Colision con la sierra que aparece en el suelo, vuelve a reaparecer al cabo de un tiempo
+        if (popollo.checkCollision(sierra)) {
+            recibirGolpe();
+            sierra.remove();
+            sierra = new Sierra(Gdx.graphics.getWidth() / 31 * 7, Gdx.graphics.getWidth() / 31 * 1 - popollo.getY() * 5);
+            pantalla.addActor(sierra);
+        }
     }
 
     public Sound getSound() {
@@ -99,5 +109,6 @@ public class Pantalla2 extends BaseScreen {
     @Override
     public void dispose() {
         sound.dispose();
+        musica.dispose();
     }
 }

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 
+import actores.Popollo;
 import pantallas.BaseScreen;
 import pantallas.Pantalla1;
 
@@ -12,7 +13,8 @@ public class Juego extends Game {
 
     @Override
     public void create() {
-        this.setPantallaActual(new Pantalla1(this));
+        Popollo popollo = new Popollo();
+        this.setPantallaActual(new Pantalla1(this, popollo));
     }
 
     public void setPantallaActual(BaseScreen pa) {

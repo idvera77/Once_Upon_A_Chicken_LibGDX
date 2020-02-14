@@ -20,7 +20,7 @@ import objetos.Objeto;
 public class Personaje extends Actor {
     protected Sprite sprite;
     protected ArrayList<Objeto> objetos;
-    protected int vida, vidaMaxima, velocidad, puntuacion;
+    protected int vida, vidaMaxima, puntuacion;
     protected boolean colliding; //Nos detecta si está colisionando o no
 
     private HashSet<Integer> moving;
@@ -44,7 +44,6 @@ public class Personaje extends Actor {
 
     public Personaje(String rutaTextura, float x, float y) {
         this.moving = new HashSet<Integer>();
-        velocidad = 10;
         objetos = new ArrayList<Objeto>();
         sprite = new Sprite(new Texture(rutaTextura));
         sprite.setBounds(x, y, Gdx.graphics.getWidth() / 31 * 2, Gdx.graphics.getHeight() / 23 * 2);
@@ -211,8 +210,8 @@ public class Personaje extends Actor {
 
     public void movimientoEnemigo() {
         MoveByAction moveLeftAction = new MoveByAction();
-        moveLeftAction.setAmount(-this.velocidad, 0);
-        moveLeftAction.setDuration(this.velocidad);
+        moveLeftAction.setAmount(-10, 0);
+        moveLeftAction.setDuration(10);
         addAction(moveLeftAction);
     }
 

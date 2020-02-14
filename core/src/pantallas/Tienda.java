@@ -1,20 +1,22 @@
 package pantallas;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.ivan.popollo_adventures.Juego;
 
-import java.util.Random;
-
 import actores.Cuervo;
+import actores.Popollo;
 import actores.Sierra;
 import objetos.GemaAzul;
 import objetos.GemaRoja;
 import objetos.Llave;
 import objetos.Pincho;
+import objetos.Pocion;
 import objetos.Puerta;
 
 
@@ -28,13 +30,17 @@ public class Tienda extends BaseScreen {
     private static final int ANCHO = Gdx.graphics.getWidth() / 5;
     private static final int ALTO = Gdx.graphics.getHeight() / 9;
 
-    public Tienda(Juego game, int seleccion) {
-        super(game);
+    public Tienda(Juego game, Popollo popollo, int seleccion) {
+        super(game, popollo);
         this.seleccion = seleccion;
         this.fondo = new Texture("fondospantalla/tienda.png");
-        this.sound = Gdx.audio.newSound(Gdx.files.internal("sonidos/cementerio.mp3"));
-        sound.play(0.2f);
+        this.musica = Gdx.audio.newMusic(Gdx.files.internal("sonidos/tienda.mp3"));
+        musica.setVolume(0.2f);
+        musica.play();
 
+        //Añadimos la pocion
+        pocion = new Pocion(Gdx.graphics.getWidth() / 31 * 14, Gdx.graphics.getHeight() / 23 * 11);
+        pantalla.addActor(pocion);
         //Añadimos los enemigos.
         enemigoTerrestre = new Cuervo(0,0);
         sierra = new Sierra(0, 0);
@@ -72,16 +78,32 @@ public class Tienda extends BaseScreen {
     @Override
     public void render(float delta) {
         super.render(delta);
+
+        if (popollo.checkCollision(pocion)) {
+            pocion.getSound().play(0.8f);
+            pocion.remove();
+            pocion = new Pocion(0, 0);
+            if(popollo.getVida() + 30 > 100){
+                popollo.setVida(100);
+            }else{
+                popollo.setVida(popollo.getVida() + 30);
+            }
+            barraVida.setValue(popollo.getVida());
+        }
+
         if (popollo.checkCollision(puerta)) {
-            if (popollo.getObjetos().size() >= 1) {
-                puerta.getSound().play(1f);
-                sound.stop();
-                if(seleccion == 3){
-                    game.setPantallaActual(new Pantalla1(this.game));
-                }else if(seleccion == 1){
-                    game.setPantallaActual(new Pantalla2(this.game));
-                }else if(seleccion == 2){
-                    game.setPantallaActual(new Pantalla3(this.game));
+            if (popollo.checkCollision(puerta)) {
+                if (popollo.getObjetos().size() == 1) {
+                    popollo.getObjetos().remove(0);
+                    puerta.getSound().play(1f);
+                    musica.stop();
+                    if (seleccion == 3) {
+                        game.setPantallaActual(new Pantalla1(this.game, popollo));
+                    } else if (seleccion == 1) {
+                        game.setPantallaActual(new Pantalla2(this.game, popollo));
+                    } else if (seleccion == 2) {
+                        game.setPantallaActual(new Pantalla3(this.game, popollo));
+                    }
                 }
             }
         }
@@ -92,12 +114,9 @@ public class Tienda extends BaseScreen {
         pantalla.getBatch().end();
     }
 
-    public Sound getSound() {
-        return sound;
-    }
-
     @Override
     public void dispose() {
         sound.dispose();
+        musica.dispose();
     }
 }

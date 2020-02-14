@@ -3,6 +3,7 @@ package pantallas;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -13,7 +14,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -30,12 +30,14 @@ import objetos.GemaAzul;
 import objetos.GemaRoja;
 import objetos.Llave;
 import objetos.Pincho;
+import objetos.Pocion;
 import objetos.Puerta;
 
 public abstract class BaseScreen implements Screen {
     protected Juego game;
     protected Stage pantalla;
     protected Popollo popollo;
+    protected Pocion pocion;
     protected Magia magia;
     protected Cuervo enemigoTerrestre;
     protected Sierra sierra;
@@ -55,9 +57,10 @@ public abstract class BaseScreen implements Screen {
     protected TextButton boton1, boton2, boton3, boton4, boton5, boton6;
     protected Pixmap pixmap, pixmap2;
     protected Sound sound;
+    protected Music musica;
     protected int puntuacion, direccion;
 
-    public BaseScreen(Juego juego) {
+    public BaseScreen(Juego juego, Popollo heroe) {
         //Creando la base del juego
         game = juego;
         pantalla = new Stage(new FillViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
@@ -65,8 +68,9 @@ public abstract class BaseScreen implements Screen {
 
         //Como el heroe se usara en todas las pantalla, lo creamos de inicio en esta BaseScreen.
         //Lo mismo con su ataque magico y una variable entero que usaremos para el ataque magico.
-        popollo = new Popollo();
-        magia = new Magia();
+        popollo = heroe;
+        popollo.setX(0);
+        magia = new Magia(0,0);
         direccion = 1;
         pantalla.addActor(popollo);
 
@@ -181,7 +185,7 @@ public abstract class BaseScreen implements Screen {
         boton6.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setPantallaActual(new Pantalla1(game));
+                reiniciar();
             }
         });
 
@@ -255,9 +259,9 @@ public abstract class BaseScreen implements Screen {
         pantalla.addActor(barraVida);
 
         //Establezco que dentro de esa pantalla, voy a mover al actor, el
-        //Primero que se insertó.
+        //Primero que se inserto.
         pantalla.setKeyboardFocus(pantalla.getActors().get(0));
-        pantalla.setDebugAll(true);
+        //pantalla.setDebugAll(true);
     }
 
     @Override
@@ -284,7 +288,7 @@ public abstract class BaseScreen implements Screen {
             llave.reduce();
             popollo.addObjeto(llave);
             llave.getSound().play(1f);
-            llave.addAction(Actions.removeActor());
+            llave.remove();
             llave = new Llave(0, 0);
             textoLlave.setText("LLAVE: 1");
         }
@@ -316,20 +320,17 @@ public abstract class BaseScreen implements Screen {
             pincho.remove();
             pincho = new Pincho(0, 0);
         }
-        //Colision con la sierra que aparece en el suelo, vuelve a reaparecer al cabo de un tiempo
-        if (popollo.checkCollision(sierra)) {
-            recibirGolpe();
-            sierra.remove();
-            sierra = new Sierra(Gdx.graphics.getWidth()/31 * 7, Gdx.graphics.getWidth()/31 * 1 - popollo.getY()*5);
-            pantalla.addActor(sierra);
-
-        }
         //Colision de nuestro disparo con el enemigo
         if(magia.checkCollision(enemigoTerrestre)){
+            enemigoTerrestre.getSound().play(1f);
             enemigoTerrestre.remove();
             enemigoTerrestre = new Cuervo(Gdx.graphics.getWidth() + popollo.getX()*1, Gdx.graphics.getHeight()/23*4);
             pantalla.addActor(enemigoTerrestre);
-            magia.remove();
+            magia = new Magia(0,0);
+        }
+        if(magia.getX()+magia.getWidth()  >= Gdx.graphics.getWidth()){
+            magia = new Magia(0,0);
+        }else if(magia.getX()+magia.getWidth()  <= 0){
             magia = new Magia(0,0);
         }
 
@@ -381,9 +382,12 @@ public abstract class BaseScreen implements Screen {
     }
 
     public void disparo(int direccion){
-        magia = new Magia(popollo.getX(), popollo.getY());
-        pantalla.addActor(magia);
-        magia.ataqueDisparo(direccion);
+        if(magia.getX() == 0 ){
+            magia.getSound().play(1f);
+            magia = new Magia(popollo.getX(), popollo.getY());
+            pantalla.addActor(magia);
+            magia.ataqueDisparo(direccion);
+        }
     }
 
     public void movimientoEnemigos(){
@@ -396,5 +400,10 @@ public abstract class BaseScreen implements Screen {
             enemigoTerrestre = new Cuervo(Gdx.graphics.getWidth() + popollo.getX()*1, Gdx.graphics.getHeight()/23*4);
             pantalla.addActor(enemigoTerrestre);
         }
+    }
+
+    public void reiniciar(){
+        musica.stop();
+        game.setPantallaActual(new Pantalla1(game, new Popollo()));
     }
 }
