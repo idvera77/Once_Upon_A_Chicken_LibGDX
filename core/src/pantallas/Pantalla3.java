@@ -33,7 +33,6 @@ public class Pantalla3 extends BaseScreen {
         musica.setVolume(0.2f);
         musica.play();
 
-
         //Añadimos los enemigos.
         enemigoTerrestre = new Cuervo(Gdx.graphics.getWidth() + popollo.getX() * 3, Gdx.graphics.getHeight() / 23 * 4);
         pantalla.addActor(enemigoTerrestre);
@@ -64,7 +63,6 @@ public class Pantalla3 extends BaseScreen {
         texturaRegion = new TextureRegion(texturaObjeto, ANCHO, ALTO);
         TextureRegion[][] temp = texturaRegion.split(ANCHO / 3, ALTO);
         framesTextura = new TextureRegion[temp.length * temp[0].length];
-
         int indice = 0;
         for (int i = 0; i < temp.length; i++) {
             for (int j = 0; j < temp[i].length; j++) {
@@ -82,7 +80,7 @@ public class Pantalla3 extends BaseScreen {
                 popollo.getObjetos().remove(0);
                 puerta.getSound().play(1f);
                 musica.stop();
-                game.setPantallaActual(new Tienda(this.game, popollo,3));
+                game.setPantallaActual(new Tienda(this.game, popollo, 3));
             }
         }
         duracion += delta;
@@ -101,11 +99,5 @@ public class Pantalla3 extends BaseScreen {
             sierra = new Sierra(Gdx.graphics.getWidth() / 31 * 7, Gdx.graphics.getWidth() / 31 * 1 - popollo.getY() * 5);
             pantalla.addActor(sierra);
         }
-    }
-
-    @Override
-    public void dispose() {
-        sound.dispose();
-        musica.dispose();
     }
 }

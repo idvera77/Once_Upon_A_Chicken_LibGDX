@@ -14,11 +14,13 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.ivan.popollo_adventures.Juego;
 
@@ -70,7 +72,7 @@ public abstract class BaseScreen implements Screen {
         //Lo mismo con su ataque magico y una variable entero que usaremos para el ataque magico.
         popollo = heroe;
         popollo.setX(0);
-        magia = new Magia(0,0);
+        magia = new Magia(0, 0);
         direccion = 1;
         pantalla.addActor(popollo);
 
@@ -123,23 +125,21 @@ public abstract class BaseScreen implements Screen {
         estiloBoton4.over = new TextureRegionDrawable(new Texture("personajes/magia.png"));
         estiloBoton4.up = new TextureRegionDrawable(new Texture("personajes/magia.png"));
         boton4 = new TextButton("", estiloBoton4);
-        boton4.setSize(Gdx.graphics.getWidth() / 31 * 3, Gdx.graphics.getHeight() / 23 * 3);
+        boton4.setSize(Gdx.graphics.getWidth() / 31 * 3, Gdx.graphics.getHeight() / 23 * 4);
         boton4.setPosition(Gdx.graphics.getWidth() / 31 * 5, 0);
         pantalla.addActor(boton4);
-
         //Boton5
         fuente5 = new BitmapFont();
         estiloBoton5 = new TextButton.TextButtonStyle();
         estiloBoton5.font = font;
         boton5 = new TextButton("EXIT", estiloBoton5);
-        boton5.setPosition(Gdx.graphics.getWidth() / 31 * 7, Gdx.graphics.getHeight()/23*10);
-
+        boton5.setPosition(Gdx.graphics.getWidth() / 31 * 7, Gdx.graphics.getHeight() / 23 * 10);
         //Boton6
         fuente6 = new BitmapFont();
         estiloBoton6 = new TextButton.TextButtonStyle();
         estiloBoton6.font = font;
         boton6 = new TextButton("RETRY", estiloBoton6);
-        boton6.setPosition(Gdx.graphics.getWidth() / 31 * 16, Gdx.graphics.getHeight()/23*10);
+        boton6.setPosition(Gdx.graphics.getWidth() / 31 * 16, Gdx.graphics.getHeight() / 23 * 10);
 
         //Evento de botones
         //Boton1: Inicia el movimiento hacia la izquierda
@@ -161,10 +161,19 @@ public abstract class BaseScreen implements Screen {
             }
         });
         //Boton3: Inicia el salto
+        //Añadido un Timer para que no puedas saltar sin parar gracias a setTouchable.disabled
         boton3.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                boton3.setTouchable(Touchable.disabled);
+                float delay = 1.2f; // seconds
                 popollo.salto();
+                Timer.schedule(new Timer.Task() {
+                    @Override
+                    public void run() {
+                        boton3.setTouchable(Touchable.enabled);
+                    }
+                }, delay);
             }
         });
         //Boton4: Inicia el disparo
@@ -178,7 +187,7 @@ public abstract class BaseScreen implements Screen {
         boton5.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-
+                Gdx.app.exit();
             }
         });
         //Boton6: Reinicia la partida
@@ -258,8 +267,7 @@ public abstract class BaseScreen implements Screen {
         barraVida.setPosition(Gdx.graphics.getWidth() / 31 * 2, Gdx.graphics.getHeight() / 23 * 20);
         pantalla.addActor(barraVida);
 
-        //Establezco que dentro de esa pantalla, voy a mover al actor, el
-        //Primero que se inserto.
+        //Indicamos quien es el actor a mover, en este caso solo a nuestro heroe
         pantalla.setKeyboardFocus(pantalla.getActors().get(0));
         //pantalla.setDebugAll(true);
     }
@@ -311,7 +319,7 @@ public abstract class BaseScreen implements Screen {
         if (popollo.checkCollision(enemigoTerrestre)) {
             recibirGolpe();
             enemigoTerrestre.remove();
-            enemigoTerrestre = new Cuervo(Gdx.graphics.getWidth() + popollo.getX()*1, Gdx.graphics.getHeight()/23*4);
+            enemigoTerrestre = new Cuervo(Gdx.graphics.getWidth() + popollo.getX() * 1, Gdx.graphics.getHeight() / 23 * 4);
             pantalla.addActor(enemigoTerrestre);
         }
         //Colision el pincho, al chocar desaparece
@@ -321,32 +329,21 @@ public abstract class BaseScreen implements Screen {
             pincho = new Pincho(0, 0);
         }
         //Colision de nuestro disparo con el enemigo
-        if(magia.checkCollision(enemigoTerrestre)){
+        if (magia.checkCollision(enemigoTerrestre)) {
             enemigoTerrestre.getSound().play(1f);
             enemigoTerrestre.remove();
-            enemigoTerrestre = new Cuervo(Gdx.graphics.getWidth() + popollo.getX()*1, Gdx.graphics.getHeight()/23*4);
+            enemigoTerrestre = new Cuervo(Gdx.graphics.getWidth() + popollo.getX() * 1, Gdx.graphics.getHeight() / 23 * 4);
             pantalla.addActor(enemigoTerrestre);
-            magia = new Magia(0,0);
+            magia = new Magia(0, 0);
         }
-        if(magia.getX()+magia.getWidth()  >= Gdx.graphics.getWidth()){
-            magia = new Magia(0,0);
-        }else if(magia.getX()+magia.getWidth()  <= 0){
-            magia = new Magia(0,0);
+        if (magia.getX() + magia.getWidth() >= Gdx.graphics.getWidth()) {
+            magia = new Magia(0, 0);
+        } else if (magia.getX() + magia.getWidth() <= 0) {
+            magia = new Magia(0, 0);
         }
-
         //Game Over cuando nuestro heroe tiene 0 de vida. Se remueven todos los actores y se activan los botones de salir o reintentar.
         if (popollo.getVida() <= 0) {
-            popollo.remove();
-            enemigoTerrestre.remove();
-            sierra.remove();
-            pincho.remove();
-            llave.remove();
-            puerta.remove();
-            gemaAzul.remove();
-            gemaRoja.remove();
-            textoGameOver.setVisible(true);
-            pantalla.addActor(boton5);
-            pantalla.addActor(boton6);
+            gameOver();
         }
     }
 
@@ -375,14 +372,14 @@ public abstract class BaseScreen implements Screen {
         pantalla.dispose();
     }
 
-    public void recibirGolpe(){
+    public void recibirGolpe() {
         popollo.getSound().play(1f);
         popollo.recibirDaño();
         barraVida.setValue(popollo.getVida());
     }
 
-    public void disparo(int direccion){
-        if(magia.getX() == 0 ){
+    public void disparo(int direccion) {
+        if (magia.getX() == 0) {
             magia.getSound().play(1f);
             magia = new Magia(popollo.getX(), popollo.getY());
             pantalla.addActor(magia);
@@ -390,20 +387,38 @@ public abstract class BaseScreen implements Screen {
         }
     }
 
-    public void movimientoEnemigos(){
+    public void movimientoEnemigos() {
         //Movimiento enemigo
         enemigoTerrestre.movimientoEnemigo();
         sierra.movimientoSierra();
         //Si este desaparece de la pantalla vuelve a generarse otro.
-        if(enemigoTerrestre.getX()+enemigoTerrestre.getWidth()  <= 0){
+        if (enemigoTerrestre.getX() + enemigoTerrestre.getWidth() <= 0) {
             enemigoTerrestre.remove();
-            enemigoTerrestre = new Cuervo(Gdx.graphics.getWidth() + popollo.getX()*1, Gdx.graphics.getHeight()/23*4);
+            enemigoTerrestre = new Cuervo(Gdx.graphics.getWidth() + popollo.getX() * 1, Gdx.graphics.getHeight() / 23 * 4);
             pantalla.addActor(enemigoTerrestre);
         }
     }
 
-    public void reiniciar(){
+    public void reiniciar() {
         musica.stop();
         game.setPantallaActual(new Pantalla1(game, new Popollo()));
+    }
+
+    public void gameOver() {
+        popollo.remove();
+        enemigoTerrestre.remove();
+        sierra.remove();
+        pincho.remove();
+        llave.remove();
+        puerta.remove();
+        gemaAzul.remove();
+        gemaRoja.remove();
+        textoGameOver.setVisible(true);
+        boton1.setTouchable(Touchable.disabled);
+        boton2.setTouchable(Touchable.disabled);
+        boton3.setTouchable(Touchable.disabled);
+        boton4.setTouchable(Touchable.disabled);
+        pantalla.addActor(boton5);
+        pantalla.addActor(boton6);
     }
 }

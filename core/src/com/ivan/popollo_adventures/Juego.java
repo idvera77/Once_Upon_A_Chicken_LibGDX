@@ -6,14 +6,17 @@ import com.badlogic.gdx.graphics.GL20;
 
 import actores.Popollo;
 import pantallas.BaseScreen;
-import pantallas.Pantalla1;
+import pantallas.*;
 
 public class Juego extends Game {
     private BaseScreen pantallaActual;
 
     @Override
     public void create() {
+        //Creamos al personaje principal para pasarlo por el constructor de cada pantalla,
+        // asi siempre es el mismo objeto y mantiene las estadisticas.
         Popollo popollo = new Popollo();
+        //Se indica la pantalla en la cual comenzara el juego
         this.setPantallaActual(new Pantalla1(this, popollo));
     }
 

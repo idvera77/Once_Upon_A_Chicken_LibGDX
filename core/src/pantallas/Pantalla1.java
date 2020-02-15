@@ -1,7 +1,6 @@
 package pantallas;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -15,7 +14,6 @@ import objetos.GemaRoja;
 import objetos.Llave;
 import objetos.Pincho;
 import objetos.Puerta;
-
 
 public class Pantalla1 extends BaseScreen {
     private Texture texturaObjeto;
@@ -38,7 +36,7 @@ public class Pantalla1 extends BaseScreen {
         pantalla.addActor(enemigoTerrestre);
         sierra = new Sierra(Gdx.graphics.getWidth() / 31 * 16, Gdx.graphics.getWidth() / 31 * 1 - popollo.getY() * 5);
         pantalla.addActor(sierra);
-        pincho = new Pincho(0,0);
+        pincho = new Pincho(0, 0);
 
         //Añadimos la llave
         llave = new Llave(Gdx.graphics.getWidth() / 31 * 28, Gdx.graphics.getHeight() / 23 * 6);
@@ -62,7 +60,6 @@ public class Pantalla1 extends BaseScreen {
         texturaRegion = new TextureRegion(texturaObjeto, ANCHO, ALTO);
         TextureRegion[][] temp = texturaRegion.split(ANCHO / 3, ALTO);
         framesTextura = new TextureRegion[temp.length * temp[0].length];
-
         int indice = 0;
         for (int i = 0; i < temp.length; i++) {
             for (int j = 0; j < temp[i].length; j++) {
@@ -82,7 +79,7 @@ public class Pantalla1 extends BaseScreen {
                 popollo.getObjetos().remove(0);
                 puerta.getSound().play(1f);
                 musica.stop();
-                game.setPantallaActual(new Tienda(this.game, popollo,1));
+                game.setPantallaActual(new Tienda(this.game, popollo, 1));
             }
         }
         duracion += delta;
@@ -102,11 +99,4 @@ public class Pantalla1 extends BaseScreen {
             pantalla.addActor(sierra);
         }
     }
-
-    @Override
-    public void dispose() {
-        sound.dispose();
-        musica.dispose();
-    }
-
 }

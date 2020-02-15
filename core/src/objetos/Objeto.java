@@ -5,21 +5,18 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
 
 public class Objeto extends Actor {
     protected Sprite sprite;
 
-    public Rectangle getHitBox() {
-        return sprite.getBoundingRectangle();
-    }
     /**
      * Constructor con todos los parámetros de objeto
+     *
      * @param rutaTextura la textura que usamos
-     * @param x posicion x inicial
-     * @param y posicion y inicial
-     * @param w anchura inicial
-     * @param h altura inicial
+     * @param x           posicion x inicial
+     * @param y           posicion y inicial
+     * @param w           anchura inicial
+     * @param h           altura inicial
      */
     public Objeto(String rutaTextura, float x, float y, float w, float h) {
         sprite = new Sprite(new Texture(rutaTextura));
@@ -40,23 +37,26 @@ public class Objeto extends Actor {
         sprite.draw(batch);
     }
 
+    /**
+     * Funcion que mueve el objeto a la posicion indicada
+     *
+     * @param x Indica la posicion x
+     * @param y Indica la posicion y
+     */
     public void moverA(float x, float y) {
         this.setPosition(x, y);
         sprite.setPosition(x, y);
     }
 
+    /**
+     * Funcion que reduce el tamaño del objeto
+     */
     public void reduce() {
         this.scaleBy(-0.5f);
         sprite.scale(-0.5f);
     }
 
-
-    public void ataqueDisparo() {
-        MoveByAction moveRightAction = new MoveByAction();
-        moveRightAction.setAmount(1000, 0);
-        moveRightAction.setDuration(1);
-        addAction(moveRightAction);
+    public Rectangle getHitBox() {
+        return sprite.getBoundingRectangle();
     }
-
-
 }

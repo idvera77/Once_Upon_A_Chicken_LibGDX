@@ -16,7 +16,6 @@ import objetos.Llave;
 import objetos.Pincho;
 import objetos.Puerta;
 
-
 public class Pantalla2 extends BaseScreen {
     private Texture texturaObjeto;
     private TextureRegion texturaRegion;
@@ -100,15 +99,5 @@ public class Pantalla2 extends BaseScreen {
             sierra = new Sierra(Gdx.graphics.getWidth() / 31 * 7, Gdx.graphics.getWidth() / 31 * 1 - popollo.getY() * 5);
             pantalla.addActor(sierra);
         }
-    }
-
-    public Sound getSound() {
-        return sound;
-    }
-
-    @Override
-    public void dispose() {
-        sound.dispose();
-        musica.dispose();
     }
 }

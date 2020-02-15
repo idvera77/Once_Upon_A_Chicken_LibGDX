@@ -3,7 +3,7 @@ package actores;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 
-public class Magia extends Personaje{
+public class Magia extends Personaje {
     private Sound sound;
 
     public Magia() {
