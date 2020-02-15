@@ -6,15 +6,9 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
-import com.badlogic.gdx.scenes.scene2d.actions.ParallelAction;
-import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
-import escuchadores.EscuchadorJugador;
 import objetos.Objeto;
 
 public class Personaje extends Actor {
@@ -23,11 +17,13 @@ public class Personaje extends Actor {
     protected int vida, vidaMaxima, puntuacion;
     protected boolean colliding; //Nos detecta si está colisionando o no
 
-    private HashSet<Integer> moving;
-
-    //Constructor de Heroe
+    /**
+     * Constructor utilizado principalmente para crear al heroe ya que dispone de parametros que no
+     * utilizan el resto de personajes o enemigos.
+     *
+     * @param rutaTextura Añadimos la textura que tendra el sprite
+     */
     public Personaje(String rutaTextura) {
-        this.moving = new HashSet<Integer>();
         vida = 100;
         vidaMaxima = 100;
         puntuacion = 0;
@@ -39,11 +35,16 @@ public class Personaje extends Actor {
         this.setPosition(0, Gdx.graphics.getHeight() / 23 * 4);
         this.setOrigin(this.sprite.getWidth() / 2, this.sprite.getHeight() / 2);
         sprite.setOrigin(this.getOriginX(), this.getOriginY());
-        addListener(new EscuchadorJugador(this));
     }
 
+    /**
+     * Constructor utilizado principalmente para enemigos
+     *
+     * @param rutaTextura Añadimos la textura que tendra el sprite
+     * @param x           Nos ayuda a indicar la posicion x donde debe aparecer el enemigo
+     * @param y           Nos ayuda a indicar la posicion y donde debe aparecer el enemigo
+     */
     public Personaje(String rutaTextura, float x, float y) {
-        this.moving = new HashSet<Integer>();
         objetos = new ArrayList<Objeto>();
         sprite = new Sprite(new Texture(rutaTextura));
         sprite.setBounds(x, y, Gdx.graphics.getWidth() / 31 * 2, Gdx.graphics.getHeight() / 23 * 2);
@@ -53,20 +54,31 @@ public class Personaje extends Actor {
         sprite.setOrigin(this.getOriginX(), this.getOriginY());
     }
 
+    /**
+     * Getter de Vida
+     *
+     * @return devuelve un entero con la vida del personaje
+     */
     public int getVida() {
         return vida;
     }
 
+    /**
+     * Setter de vida
+     *
+     * @param vida variable de tipo entero que modifica el valor de la vida del personaje
+     */
     public void setVida(int vida) {
         this.vida = vida;
     }
 
+    /**
+     * Getter de Vida Maxima
+     *
+     * @return devuelve un entero con la vida maxima del personaje
+     */
     public int getVidaMaxima() {
         return vidaMaxima;
-    }
-
-    public void setVidaMaxima(int vidaMaxima) {
-        this.vidaMaxima = vidaMaxima;
     }
 
     public int getPuntuacion() {
@@ -77,12 +89,22 @@ public class Personaje extends Actor {
         this.puntuacion = puntuacion;
     }
 
-    public void addObjeto(Objeto o) {
-        this.objetos.add(o);
-    }
-
+    /**
+     * Getter de ArrayList<Objeto>
+     *
+     * @return devuelve un ArrayList de objetos
+     */
     public ArrayList<Objeto> getObjetos() {
         return objetos;
+    }
+
+    /**
+     * Funcion para añadir objetos a la lista
+     *
+     * @param objeto El objeto a añadir
+     */
+    public void addObjeto(Objeto objeto) {
+        this.objetos.add(objeto);
     }
 
     @Override
@@ -94,11 +116,11 @@ public class Personaje extends Actor {
         sprite.setColor(getColor().r, getColor().g, getColor().b, getColor().a);
         sprite.draw(batch);
         //para cada objeto
-        for (Objeto o : this.objetos) {
+        for (Objeto objeto : this.objetos) {
             //lo muevo con el sprite
-            o.moverA(sprite.getX(), sprite.getY());
+            objeto.moverA(sprite.getX(), sprite.getY());
             //lo dibujo
-            o.draw(batch, parentAlpha);
+            objeto.draw(batch, parentAlpha);
         }
     }
 
@@ -108,11 +130,13 @@ public class Personaje extends Actor {
     }
 
     /**
-     * @param c
-     * @return
+     * Funcion que nos permite realizar las colisiones entre un personaje y un objeto
+     *
+     * @param objeto Objeto con el cual colisionamos
+     * @return Devuelve True si colisiona o false si no
      */
-    public boolean checkCollision(Objeto c) {
-        boolean overlaps = getHitBox().overlaps(c.getHitBox());
+    public boolean checkCollision(Objeto objeto) {
+        boolean overlaps = getHitBox().overlaps(objeto.getHitBox());
         if (overlaps && colliding == false) {
             colliding = true;
         } else if (!overlaps) {
@@ -122,8 +146,10 @@ public class Personaje extends Actor {
     }
 
     /**
-     * @param enemigo
-     * @return
+     * Funcion que nos permite realizar las colisiones entre un personaje y un objeto
+     *
+     * @param enemigo Enemigo con el cual colisionamos
+     * @return Devuelve True si colisiona o false si no
      */
     public boolean checkCollision(Personaje enemigo) {
         boolean overlaps = getHitBox().overlaps(enemigo.getHitBox());
@@ -133,114 +159,6 @@ public class Personaje extends Actor {
             colliding = false;
         }
         return colliding;
-    }
-
-    public HashSet<Integer> getMoving() {
-        return moving;
-    }
-
-    public void startMoving(Integer direccion) {
-        this.moving.add(direccion);
-    }
-
-    public void stopMoving(int direccion) {
-        this.moving.remove(direccion);
-    }
-
-    @Override
-    public void act(float delta) {
-        super.act(delta);
-        if (moving.contains(0)) {
-            moveLeft(delta);
-        }
-        if (moving.contains(1)) {
-            moveRight(delta);
-        }
-    }
-
-    public void moveLeft(float delta) {
-        if (getX() <= 0) {
-            setX(0);
-        } else {
-            this.sprite = new Sprite(new Texture("personajes/polloizquierda.png"));
-            sprite.setBounds(sprite.getX(), sprite.getY(), Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 7);
-            MoveByAction moveLeftAction = new MoveByAction();
-            moveLeftAction.setAmount(-5, 0);
-            moveLeftAction.setDuration(delta);
-            addAction(moveLeftAction);
-        }
-    }
-
-    public void moveRight(float delta) {
-        if (getX() >= Gdx.graphics.getWidth() - this.sprite.getWidth()) {
-            setX(Gdx.graphics.getWidth() - this.sprite.getWidth());
-        } else {
-            this.sprite = new Sprite(new Texture("personajes/polloderecha.png"));
-            sprite.setBounds(sprite.getX(), sprite.getY(), Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 7);
-            MoveByAction moveRightAction = new MoveByAction();
-            moveRightAction.setAmount(5, 0);
-            moveRightAction.setDuration(delta);
-            addAction(moveRightAction);
-        }
-    }
-
-    public void salto() {
-        SequenceAction salto = new SequenceAction(
-                Actions.moveBy(0, Gdx.graphics.getHeight() / 33 * 11, 0.6f),
-                Actions.moveBy(0, -Gdx.graphics.getHeight() / 33 * 11, 0.6f)
-        );
-        addAction(salto);
-    }
-
-    public int recibirDaño() {
-        SequenceAction parpadear = new SequenceAction(new SequenceAction(
-                Actions.alpha(0.1f, 0.2f),
-                Actions.alpha(1f, 0.2f),
-                Actions.alpha(0.1f, 0.2f),
-                Actions.alpha(1f, 0.2f)
-        ), new SequenceAction(
-                Actions.alpha(0.1f, 0.2f),
-                Actions.alpha(1f, 0.2f),
-                Actions.alpha(0.1f, 0.2f),
-                Actions.alpha(1f, 0.2f)));
-        addAction(new ParallelAction(parpadear));
-        this.vida -= 20;
-        return vida;
-    }
-
-    public void movimientoEnemigo() {
-        MoveByAction moveLeftAction = new MoveByAction();
-        moveLeftAction.setAmount(-10, 0);
-        moveLeftAction.setDuration(10);
-        addAction(moveLeftAction);
-    }
-
-    public void movimientoSierra() {
-        if (getY() >= Gdx.graphics.getHeight() / 33 * 6 - this.sprite.getHeight()) {
-            MoveByAction moveDownAction = new MoveByAction();
-            moveDownAction.setAmountY(-10);
-            moveDownAction.setDuration(1);
-            addAction(moveDownAction);
-        } else {
-            MoveByAction moveUpAction = new MoveByAction();
-            moveUpAction.setAmountY(10);
-            moveUpAction.setDuration(2);
-            addAction(moveUpAction);
-        }
-    }
-
-    public void ataqueDisparo(int direccion) {
-        if (direccion == 0) {
-            MoveByAction moveLeftAction = new MoveByAction();
-            moveLeftAction.setAmountX(-Gdx.graphics.getWidth());
-            moveLeftAction.setDuration(1);
-            addAction(moveLeftAction);
-        } else {
-            MoveByAction moveRightAction = new MoveByAction();
-            moveRightAction.setAmountX(Gdx.graphics.getWidth());
-            moveRightAction.setDuration(1);
-            addAction(moveRightAction);
-        }
     }
 }
 

@@ -1,20 +1,13 @@
 package pantallas;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.ivan.popollo_adventures.Juego;
 
-import actores.Cuervo;
-import actores.Popollo;
-import actores.Sierra;
-import objetos.GemaAzul;
-import objetos.GemaRoja;
-import objetos.Llave;
-import objetos.Pincho;
-import objetos.Puerta;
+import actores.*;
+import objetos.*;
 
 
 public class Pantalla3 extends BaseScreen {
@@ -29,13 +22,13 @@ public class Pantalla3 extends BaseScreen {
     public Pantalla3(Juego game, Popollo popollo) {
         super(game, popollo);
         this.fondo = new Texture("fondospantalla/cementerio.png");
-        this.musica = Gdx.audio.newMusic(Gdx.files.internal("sonidos/cementerio.mp3"));
-        musica.setVolume(0.2f);
-        musica.play();
+        this.musica = Gdx.audio.newMusic(Gdx.files.internal("sonidos/cementerio.mp3")); //Musica de la pantalla
+        musica.setVolume(0.2f); //Volumen de la musica
+        musica.play(); //Iniciamos la musica
 
         //Añadimos los enemigos.
-        enemigoTerrestre = new Cuervo(Gdx.graphics.getWidth() + popollo.getX() * 3, Gdx.graphics.getHeight() / 23 * 4);
-        pantalla.addActor(enemigoTerrestre);
+        cuervo = new Cuervo(Gdx.graphics.getWidth() + popollo.getX() * 3, Gdx.graphics.getHeight() / 23 * 4);
+        pantalla.addActor(cuervo);
         sierra = new Sierra(Gdx.graphics.getWidth() / 31 * 7, Gdx.graphics.getWidth() / 31 * 1 - popollo.getY() * 5);
         pantalla.addActor(sierra);
         pincho = new Pincho(Gdx.graphics.getWidth() / 31 * 15, Gdx.graphics.getWidth() / 31 * 3);
@@ -48,7 +41,6 @@ public class Pantalla3 extends BaseScreen {
         //Añadimos las gemas
         gemaAzul = new GemaAzul(Gdx.graphics.getWidth() / 31 * 29, Gdx.graphics.getHeight() / 23 * 6);
         pantalla.addActor(gemaAzul);
-
         gemaRoja = new GemaRoja(Gdx.graphics.getWidth() / 17 * 13, Gdx.graphics.getHeight() / 23 * 12);
         pantalla.addActor(gemaRoja);
 
@@ -59,6 +51,8 @@ public class Pantalla3 extends BaseScreen {
 
     @Override
     public void show() {
+        //Variables y bucle necesario para realizar la animacion de la exclamacion que indica la
+        //salida del nivel.
         texturaObjeto = new Texture("objetos/animacionpuerta.png");
         texturaRegion = new TextureRegion(texturaObjeto, ANCHO, ALTO);
         TextureRegion[][] temp = texturaRegion.split(ANCHO / 3, ALTO);
@@ -75,6 +69,8 @@ public class Pantalla3 extends BaseScreen {
     @Override
     public void render(float delta) {
         super.render(delta);
+        //Si el popollo tiene en su inventario un objeto (solo podemos guardar la llave) se completa
+        // y nos movemos a la siguiente pantalla parando ademas la musica
         if (popollo.checkCollision(puerta)) {
             if (popollo.getObjetos().size() == 1) {
                 popollo.getObjetos().remove(0);
@@ -83,6 +79,8 @@ public class Pantalla3 extends BaseScreen {
                 game.setPantallaActual(new Tienda(this.game, popollo, 3));
             }
         }
+
+        //Posicion y duracion de la animacion
         duracion += delta;
         TextureRegion frame = (TextureRegion) animacionObjeto.getKeyFrame(duracion, true);
         pantalla.getBatch().begin();

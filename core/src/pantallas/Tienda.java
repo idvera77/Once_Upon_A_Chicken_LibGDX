@@ -1,23 +1,13 @@
 package pantallas;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.ivan.popollo_adventures.Juego;
 
-import actores.Cuervo;
-import actores.Popollo;
-import actores.Sierra;
-import objetos.GemaAzul;
-import objetos.GemaRoja;
-import objetos.Llave;
-import objetos.Pincho;
-import objetos.Pocion;
-import objetos.Puerta;
+import actores.*;
+import objetos.*;
 
 
 public class Tienda extends BaseScreen {
@@ -41,8 +31,10 @@ public class Tienda extends BaseScreen {
         //Añadimos la pocion
         pocion = new Pocion(Gdx.graphics.getWidth() / 31 * 14, Gdx.graphics.getHeight() / 23 * 11);
         pantalla.addActor(pocion);
+
+        //Aunque no es necesario dejo la opcion de añadir los enemigos por si cambio de idea
         //Añadimos los enemigos.
-        enemigoTerrestre = new Cuervo(0,0);
+        cuervo = new Cuervo(0, 0);
         sierra = new Sierra(0, 0);
         pincho = new Pincho(0, 0);
 
@@ -51,8 +43,8 @@ public class Tienda extends BaseScreen {
         pantalla.addActor(llave);
 
         //Añadimos las gemas
-        gemaAzul = new GemaAzul(0,0);
-        gemaRoja = new GemaRoja(0,0);
+        gemaAzul = new GemaAzul(0, 0);
+        gemaRoja = new GemaRoja(0, 0);
 
         //Añadimos la salida del nivel y la enviamos atras para que los personajes sean visibles al pasar por ella.
         puerta = new Puerta(Gdx.graphics.getWidth() / 31 * 27, Gdx.graphics.getHeight() / 23 * 5);
@@ -61,11 +53,12 @@ public class Tienda extends BaseScreen {
 
     @Override
     public void show() {
+        //Variables y bucle necesario para realizar la animacion de la exclamacion que indica la
+        //salida del nivel.
         texturaObjeto = new Texture("objetos/animacionpuerta.png");
         texturaRegion = new TextureRegion(texturaObjeto, ANCHO, ALTO);
         TextureRegion[][] temp = texturaRegion.split(ANCHO / 3, ALTO);
         framesTextura = new TextureRegion[temp.length * temp[0].length];
-
         int indice = 0;
         for (int i = 0; i < temp.length; i++) {
             for (int j = 0; j < temp[i].length; j++) {
@@ -78,19 +71,8 @@ public class Tienda extends BaseScreen {
     @Override
     public void render(float delta) {
         super.render(delta);
-
-        if (popollo.checkCollision(pocion)) {
-            pocion.getSound().play(0.8f);
-            pocion.remove();
-            pocion = new Pocion(0, 0);
-            if(popollo.getVida() + 30 > 100){
-                popollo.setVida(100);
-            }else{
-                popollo.setVida(popollo.getVida() + 30);
-            }
-            barraVida.setValue(popollo.getVida());
-        }
-
+        //Si el popollo tiene en su inventario un objeto (solo podemos guardar la llave) se completa
+        // y nos movemos a la siguiente pantalla parando ademas la musica
         if (popollo.checkCollision(puerta)) {
             if (popollo.checkCollision(puerta)) {
                 if (popollo.getObjetos().size() == 1) {
@@ -107,6 +89,12 @@ public class Tienda extends BaseScreen {
                 }
             }
         }
+        // //Colision con pocion, aumenta nuestra vida
+        if (popollo.checkCollision(pocion)) {
+            recogerPocion();
+        }
+
+        //Posicion y duracion de la animacion
         duracion += delta;
         TextureRegion frame = (TextureRegion) animacionObjeto.getKeyFrame(duracion, true);
         pantalla.getBatch().begin();
@@ -114,9 +102,20 @@ public class Tienda extends BaseScreen {
         pantalla.getBatch().end();
     }
 
-    @Override
-    public void dispose() {
-        sound.dispose();
-        musica.dispose();
+    /**
+     * Funcion para la colision con el objeto Pocion, lo hace desaparecer de la pantalla y
+     * aumenta la vida, ademas de realizar el sonido
+     * La salud no puede superar la vida maxima
+     */
+    public void recogerPocion() {
+        pocion.getSound().play(0.8f);
+        pocion.remove();
+        pocion = new Pocion(0, 0);
+        if (popollo.getVida() + 30 > popollo.getVidaMaxima()) {
+            popollo.setVida(popollo.getVidaMaxima());
+        } else {
+            popollo.setVida(popollo.getVida() + 30);
+        }
+        barraVida.setValue(popollo.getVida());
     }
 }

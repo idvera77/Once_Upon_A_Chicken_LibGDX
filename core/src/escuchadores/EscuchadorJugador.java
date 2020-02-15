@@ -5,25 +5,26 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 
 import actores.Personaje;
+import actores.Popollo;
 
 public class EscuchadorJugador extends InputListener {
-    Personaje jugador;
+    Popollo heroe;
 
-    public EscuchadorJugador(Personaje j) {
-        this.jugador = j;
+    public EscuchadorJugador(Popollo heroe) {
+        this.heroe = heroe;
     }
 
     @Override
     public boolean keyDown(InputEvent event, int keycode) {
         switch (keycode) {
             case Input.Keys.A:
-                jugador.startMoving(0);
+                heroe.startMoving(0);
                 break;
             case Input.Keys.D:
-                jugador.startMoving(1);
+                heroe.startMoving(1);
                 break;
             case Input.Keys.SPACE:
-                jugador.salto();
+                heroe.salto();
                 break;
         }
         return super.keyDown(event, keycode);
@@ -33,10 +34,10 @@ public class EscuchadorJugador extends InputListener {
     public boolean keyUp(InputEvent event, int keycode) {
         switch (keycode) {
             case Input.Keys.A:
-                jugador.stopMoving(0);
+                heroe.stopMoving(0);
                 break;
             case Input.Keys.D:
-                jugador.stopMoving(1);
+                heroe.stopMoving(1);
                 break;
         }
         return super.keyUp(event, keycode);

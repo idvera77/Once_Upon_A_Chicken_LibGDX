@@ -20,8 +20,13 @@ public class Juego extends Game {
         this.setPantallaActual(new Pantalla1(this, popollo));
     }
 
-    public void setPantallaActual(BaseScreen pa) {
-        pantallaActual = pa;
+    /**
+     * Setter de pantallaActual
+     *
+     * @param pantalla pantalla a cargar
+     */
+    public void setPantallaActual(BaseScreen pantalla) {
+        pantallaActual = pantalla;
         setScreen(pantallaActual);
     }
 
