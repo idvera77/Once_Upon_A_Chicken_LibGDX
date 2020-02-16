@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/tutorial"
+        android:icon="@drawable/ic_info_black_24dp"
+        android:title="@string/Tutorial" />
+
+    <item
+        android:id="@+id/juego"
+        android:icon="@drawable/ic_videogame_asset_black_24dp"
+        android:title="@string/Juego" />
+
+    <item
+        android:id="@+id/ranking"
+        android:icon="@drawable/ic_stars_black_24dp"
+        android:title="@string/MaximaPuntuacion" />
+
+</menu>

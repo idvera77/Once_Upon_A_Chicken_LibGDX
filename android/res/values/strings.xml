@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">PopolloAdventures</string>
-    <string name="jugar">Jugar</string>
+    <string name="app_name">Once Upon a Chicken</string>
+    <string name="jugar">Comenzar Partida</string>
     <string name="Registro">Registro</string>
+    <string name="Juego">Juego</string>
+    <string name="Tutorial">Tutorial</string>
+    <string name="MaximaPuntuacion">Maxima Puntuación</string>
+    <string name="Puntuacion">Puntuacion</string>
+    <string name="Tiempo">Tiempo</string>
 </resources>
