@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.ivan.popollo_adventures.Juego;
 
 import actores.*;
+import basededatos.juegoDataBase;
 import objetos.*;
 
 
@@ -19,8 +20,8 @@ public class Pantalla2 extends BaseScreen {
     private static final int ANCHO = Gdx.graphics.getWidth() / 5;
     private static final int ALTO = Gdx.graphics.getHeight() / 9;
 
-    public Pantalla2(Juego game, Popollo popollo) {
-        super(game, popollo);
+    public Pantalla2(Juego game, Popollo popollo, juegoDataBase db) {
+        super(game, popollo, db);
         this.fondo = new Texture("fondospantalla/montaña.png"); //Fondo de la pantalla
         this.musica = Gdx.audio.newMusic(Gdx.files.internal("sonidos/nieve.mp3")); //Musica de la pantalla
         musica.setVolume(0.2f); //Volumen de la musica
@@ -72,12 +73,14 @@ public class Pantalla2 extends BaseScreen {
         super.render(delta);
         //Si el popollo tiene en su inventario un objeto (solo podemos guardar la llave) se completa
         // y nos movemos a la siguiente pantalla parando ademas la musica
+        //Aprovechamos para guardar la puntuacion en la base de datos
         if (popollo.checkCollision(puerta)) {
             if (popollo.getObjetos().size() == 1) {
+                juegoDataBase.terminarPartida(popollo.getPuntuacion(), null);
                 popollo.getObjetos().remove(0);
                 puerta.getSound().play(1f);
                 musica.stop();
-                game.setPantallaActual(new Tienda(this.game, popollo, 2));
+                game.setPantallaActual(new Tienda(this.game, popollo, juegoDataBase, 2));
             }
         }
 

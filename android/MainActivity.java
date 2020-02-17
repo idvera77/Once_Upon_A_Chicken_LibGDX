@@ -14,8 +14,4 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void Jugar(View view) {
-        Intent intent = new Intent(this, AndroidLauncher.class);
-        startActivity(intent);
-    }
 }

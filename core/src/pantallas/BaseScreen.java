@@ -25,6 +25,7 @@ import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.ivan.popollo_adventures.Juego;
 
 import actores.*;
+import basededatos.juegoDataBase;
 import objetos.*;
 
 public abstract class BaseScreen implements Screen {
@@ -53,13 +54,14 @@ public abstract class BaseScreen implements Screen {
     protected Sound sound;
     protected Music musica;
     protected int puntuacion, direccion;
+    protected basededatos.juegoDataBase juegoDataBase;
 
-    public BaseScreen(Juego juego, Popollo heroe) {
+    public BaseScreen(Juego juego, Popollo heroe, juegoDataBase db) {
         //Creando la base del juego
         game = juego;
         pantalla = new Stage(new FillViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         Gdx.input.setInputProcessor(pantalla);
-
+        juegoDataBase = db;
         //Como el heroe se usara en todas las pantalla, lo creamos de inicio en esta BaseScreen.
         //Lo mismo con su ataque magico y una variable entero que usaremos para el ataque magico.
         popollo = heroe;
@@ -453,13 +455,14 @@ public abstract class BaseScreen implements Screen {
      */
     public void reiniciar() {
         musica.stop();
-        game.setPantallaActual(new Pantalla1(game, new Popollo()));
+        game.setPantallaActual(new Pantalla1(game, new Popollo(), juegoDataBase));
     }
 
     /**
      * Funcion que remueve algunos actors, bloquea los botones y muestra la pantalla de gameOver
      */
     public void gameOver() {
+        juegoDataBase.terminarPartida(popollo.getPuntuacion(), null);
         popollo.remove();
         cuervo.remove();
         sierra.remove();

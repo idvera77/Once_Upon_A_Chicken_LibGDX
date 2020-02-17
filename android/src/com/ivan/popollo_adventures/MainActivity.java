@@ -1,13 +1,13 @@
 package com.ivan.popollo_adventures;
 
-import android.content.Intent;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,21 +23,21 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 int id = menuItem.getItemId();
 
-                if(id == R.id.juego){
+                if (id == R.id.juego) {
                     JuegoFragment fragment = new JuegoFragment();
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.replace(R.id.frame_layout, fragment);
                     fragmentTransaction.commit();
                 }
 
-                if(id == R.id.ranking){
+                if (id == R.id.ranking) {
                     RankingFragment fragment = new RankingFragment();
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.replace(R.id.frame_layout, fragment);
                     fragmentTransaction.commit();
                 }
 
-                if(id == R.id.tutorial){
+                if (id == R.id.tutorial) {
                     TutorialFragment fragment = new TutorialFragment();
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.replace(R.id.frame_layout, fragment);
@@ -48,13 +48,21 @@ public class MainActivity extends AppCompatActivity {
         });
         navigationView.setSelectedItemId(R.id.juego);
     }
-    public void Jugar(View view) {
-        Intent intent = new Intent(this, AndroidLauncher.class);
-        startActivity(intent);
-    }
 
-    public void Registro(View view) {
-        Intent intent = new Intent(this, Registro.class);
-        startActivity(intent);
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+        .setIcon(R.drawable.ic_videogame_asset_black_24dp)
+        .setTitle("Adiós Popollo ^_^")
+        .setMessage("¿Estas seguro que quieres cerrar el juego?")
+        .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+
+        })
+        .setNegativeButton("No", null)
+        .show();
     }
 }

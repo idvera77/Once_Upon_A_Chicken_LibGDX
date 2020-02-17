@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.ivan.popollo_adventures.Juego;
 
 import actores.*;
+import basededatos.juegoDataBase;
 import objetos.*;
 
 
@@ -20,8 +21,8 @@ public class Tienda extends BaseScreen {
     private static final int ANCHO = Gdx.graphics.getWidth() / 5;
     private static final int ALTO = Gdx.graphics.getHeight() / 9;
 
-    public Tienda(Juego game, Popollo popollo, int seleccion) {
-        super(game, popollo);
+    public Tienda(Juego game, Popollo popollo, juegoDataBase db, int seleccion) {
+        super(game, popollo, db);
         this.seleccion = seleccion;
         this.fondo = new Texture("fondospantalla/tienda.png");
         this.musica = Gdx.audio.newMusic(Gdx.files.internal("sonidos/tienda.mp3"));
@@ -80,11 +81,11 @@ public class Tienda extends BaseScreen {
                     puerta.getSound().play(1f);
                     musica.stop();
                     if (seleccion == 3) {
-                        game.setPantallaActual(new Pantalla1(this.game, popollo));
+                        game.setPantallaActual(new Pantalla1(this.game, popollo, juegoDataBase));
                     } else if (seleccion == 1) {
-                        game.setPantallaActual(new Pantalla2(this.game, popollo));
+                        game.setPantallaActual(new Pantalla2(this.game, popollo, juegoDataBase));
                     } else if (seleccion == 2) {
-                        game.setPantallaActual(new Pantalla3(this.game, popollo));
+                        game.setPantallaActual(new Pantalla3(this.game, popollo, juegoDataBase));
                     }
                 }
             }
