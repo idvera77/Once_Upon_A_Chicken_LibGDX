@@ -6,6 +6,7 @@
     <string name="Juego">Juego</string>
     <string name="Tutorial">Tutorial</string>
     <string name="MaximaPuntuacion">Maxima Puntuación</string>
-    <string name="Puntuacion">Puntuacion</string>
-    <string name="Tiempo">Tiempo</string>
+    <string name="primerPuesto">1st:</string>
+    <string name="segundoPuesto">2nd:</string>
+    <string name="tercerPuesto">3rd:</string>
 </resources>

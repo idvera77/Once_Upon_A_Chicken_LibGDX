@@ -5,4 +5,5 @@
     <color name="botonJugarBase">#00AD6D</color>
     <color name="botonJugar">#4EF0D9</color>
     <color name="Negro">#000000</color>
+    <color name="colorPuntuaciones">#F8EBB3</color>
 </resources>

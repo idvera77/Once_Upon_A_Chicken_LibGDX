@@ -27,8 +27,7 @@ public class Juego extends Game {
         //Se indica la pantalla en la cual comenzara el juego
         this.setPantallaActual(new Pantalla1(this, popollo, juegoDataBase));
         //Se inicia partida y se inserta un nuego registro en la base de datos
-        juegoDataBase.empezarPartida(popollo.getPuntuacion());
-        juegoDataBase.mejorPartida();
+        juegoDataBase.empezarPartida();
     }
 
     /**

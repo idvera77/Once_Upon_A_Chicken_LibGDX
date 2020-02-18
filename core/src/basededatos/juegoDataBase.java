@@ -1,6 +1,6 @@
 package basededatos;
 
-import java.sql.Timestamp;
+import java.util.ArrayList;
 
 public abstract class juegoDataBase {
     private static  int databaseVersion;
@@ -8,15 +8,12 @@ public abstract class juegoDataBase {
     private static  String SCORE_TABLENAME;
     private static  String SCORE_FIELD ;
     private static  String STARTDATE_FIELD;
-    private static  String ENDDATE_FIELD;
     private static  String databaseCreationQuery;
     private static  String databaseUpdateQuery;
 
-    public abstract void empezarPartida(int puntos);
-
-    public abstract void mejorPartida();
-
-    public abstract void terminarPartida(int puntos, Timestamp tiempoFinal);
+    public abstract void empezarPartida();
+    public abstract void terminarPartida(int puntos);
+    public abstract ArrayList<String> mejorPartida();
 
     public juegoDataBase(){
         databaseVersion=1;
@@ -24,12 +21,9 @@ public abstract class juegoDataBase {
         SCORE_TABLENAME="totalScore";
         SCORE_FIELD ="score";
         STARTDATE_FIELD="gameStartDate";
-        ENDDATE_FIELD="gameEndDate";
         databaseCreationQuery="CREATE TABLE "+SCORE_TABLENAME+" (" +
                 STARTDATE_FIELD +" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
-                SCORE_FIELD + " INT DEFAULT 0 ," +
-                ENDDATE_FIELD +" TIMESTAMP DEFAULT NULL" +
-                ");";
+                SCORE_FIELD + " INT NOT NULL);";
         databaseUpdateQuery="";
     }
 
@@ -41,9 +35,6 @@ public abstract class juegoDataBase {
     }
     public static String getStartdateFieldName(){
         return STARTDATE_FIELD;
-    }
-    public static String getEnddateFieldName(){
-        return ENDDATE_FIELD;
     }
 
     public static String getDatabaseName(){

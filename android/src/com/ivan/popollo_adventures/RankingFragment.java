@@ -6,24 +6,39 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import basededatos.JuegoDataBaseAndroid;
+import basededatos.MiOpenHelper;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class RankingFragment extends Fragment {
-
+    private TextView puntuacion1, puntuacion2, puntuacion3;
 
     public RankingFragment() {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_ranking, container, false);
+        View view = inflater.inflate(R.layout.fragment_ranking, container, false);
+        JuegoDataBaseAndroid db = new JuegoDataBaseAndroid(getContext());
+        puntuacion1 = view.findViewById(R.id.cajaPuntuacion);
+        puntuacion2 = view.findViewById(R.id.cajaPuntuacion2);
+        puntuacion3 = view.findViewById(R.id.cajaPuntuacion3);
+        if(db.mejorPartida().size() == 0){
+
+        }else{
+            puntuacion1.setText(this.getString(R.string.primerPuesto) + " " + db.mejorPartida().get(0));
+            puntuacion2.setText(this.getString(R.string.segundoPuesto) + " " + db.mejorPartida().get(1));
+            puntuacion3.setText(this.getString(R.string.tercerPuesto) + " " + db.mejorPartida().get(2));
+        }
+
+        return view;
     }
 
 }

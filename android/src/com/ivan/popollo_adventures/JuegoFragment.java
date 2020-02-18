@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 
 /**
@@ -28,7 +27,7 @@ public class JuegoFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         vista = inflater.inflate(R.layout.fragment_juego, container, false);
-        btnJugar = (Button)vista.findViewById(R.id.botonJugar);
+        btnJugar = (Button) vista.findViewById(R.id.botonJugar);
         btnJugar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -76,7 +76,7 @@ public class Pantalla3 extends BaseScreen {
         //Aprovechamos para guardar la puntuacion en la base de datos
         if (popollo.checkCollision(puerta)) {
             if (popollo.getObjetos().size() == 1) {
-                juegoDataBase.terminarPartida(popollo.getPuntuacion(), null);
+                juegoDataBase.terminarPartida(popollo.getPuntuacion());
                 popollo.getObjetos().remove(0);
                 puerta.getSound().play(1f);
                 musica.stop();

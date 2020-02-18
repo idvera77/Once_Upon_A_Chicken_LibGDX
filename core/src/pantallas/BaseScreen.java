@@ -462,7 +462,7 @@ public abstract class BaseScreen implements Screen {
      * Funcion que remueve algunos actors, bloquea los botones y muestra la pantalla de gameOver
      */
     public void gameOver() {
-        juegoDataBase.terminarPartida(popollo.getPuntuacion(), null);
+        juegoDataBase.terminarPartida(popollo.getPuntuacion());
         popollo.remove();
         cuervo.remove();
         sierra.remove();
