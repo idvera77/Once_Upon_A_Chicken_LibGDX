@@ -2,6 +2,7 @@ package com.ivan.popollo_adventures;
 
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.widget.Button;
  * A simple {@link Fragment} subclass.
  */
 public class JuegoFragment extends Fragment {
+    public MainActivity activity;
     Button btnJugar;
     View vista;
 
@@ -25,14 +27,16 @@ public class JuegoFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        activity = (MainActivity) getActivity();
         vista = inflater.inflate(R.layout.fragment_juego, container, false);
         btnJugar = (Button) vista.findViewById(R.id.botonJugar);
         btnJugar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                activity.musica.stop();
                 Intent intent = new Intent(getContext(), AndroidLauncher.class);
                 startActivity(intent);
+
             }
         });
         return vista;

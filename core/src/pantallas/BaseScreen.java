@@ -25,7 +25,7 @@ import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.ivan.popollo_adventures.Juego;
 
 import actores.*;
-import basededatos.juegoDataBase;
+import basededatos.JuegoDataBase;
 import objetos.*;
 
 public abstract class BaseScreen implements Screen {
@@ -54,9 +54,9 @@ public abstract class BaseScreen implements Screen {
     protected Sound sound;
     protected Music musica;
     protected int puntuacion, direccion;
-    protected basededatos.juegoDataBase juegoDataBase;
+    protected JuegoDataBase juegoDataBase;
 
-    public BaseScreen(Juego juego, Popollo heroe, juegoDataBase db) {
+    public BaseScreen(Juego juego, Popollo heroe, JuegoDataBase db) {
         //Creando la base del juego
         game = juego;
         pantalla = new Stage(new FillViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
@@ -339,7 +339,7 @@ public abstract class BaseScreen implements Screen {
      * Funcion que se activa al recibir daño, realiza un sonido, una animacion y baja la barra de vida
      */
     public void recibirGolpe() {
-        popollo.getSound().play(1f);
+        popollo.getSound().play(0.5f);
         popollo.recibirDaño();
         barraVida.setValue(popollo.getVida());
     }
@@ -380,7 +380,7 @@ public abstract class BaseScreen implements Screen {
     public void colisionLlave() {
         llave.reduce();
         popollo.addObjeto(llave);
-        llave.getSound().play(1f);
+        llave.getSound().play(0.8f);
         llave.remove();
         llave = new Llave(0, 0);
         textoLlave.setText("LLAVE: 1");

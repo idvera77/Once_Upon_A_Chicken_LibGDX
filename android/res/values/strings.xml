@@ -9,4 +9,5 @@
     <string name="primerPuesto">1st:</string>
     <string name="segundoPuesto">2nd:</string>
     <string name="tercerPuesto">3rd:</string>
+    <string name="sinResultado">Sin resultados OwO</string>
 </resources>

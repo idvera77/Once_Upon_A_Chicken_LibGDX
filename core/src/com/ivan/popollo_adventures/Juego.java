@@ -4,18 +4,16 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 
-import java.sql.Timestamp;
-
 import actores.Popollo;
-import basededatos.juegoDataBase;
+import basededatos.JuegoDataBase;
 import pantallas.BaseScreen;
 import pantallas.*;
 
 public class Juego extends Game {
-    private final basededatos.juegoDataBase juegoDataBase;
+    private final JuegoDataBase juegoDataBase;
     private BaseScreen pantallaActual;
 
-    public Juego(juegoDataBase db) {
+    public Juego(JuegoDataBase db) {
         this.juegoDataBase = db;
     }
 

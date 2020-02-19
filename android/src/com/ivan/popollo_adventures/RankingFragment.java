@@ -30,14 +30,16 @@ public class RankingFragment extends Fragment {
         puntuacion1 = view.findViewById(R.id.cajaPuntuacion);
         puntuacion2 = view.findViewById(R.id.cajaPuntuacion2);
         puntuacion3 = view.findViewById(R.id.cajaPuntuacion3);
-        if(db.mejorPartida().size() == 0){
-
-        }else{
+        //Miramos el array recibido gracias la consulta de la base de datos para incluir un raking con puntuaciones
+        if(db.mejorPartida().size() >= 1) {
             puntuacion1.setText(this.getString(R.string.primerPuesto) + " " + db.mejorPartida().get(0));
+        }
+        if(db.mejorPartida().size() >= 2) {
             puntuacion2.setText(this.getString(R.string.segundoPuesto) + " " + db.mejorPartida().get(1));
+        }
+        if(db.mejorPartida().size() >= 3){
             puntuacion3.setText(this.getString(R.string.tercerPuesto) + " " + db.mejorPartida().get(2));
         }
-
         return view;
     }
 

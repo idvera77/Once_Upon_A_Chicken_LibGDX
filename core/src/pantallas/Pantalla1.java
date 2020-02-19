@@ -9,7 +9,7 @@ import com.ivan.popollo_adventures.Juego;
 import actores.Cuervo;
 import actores.Popollo;
 import actores.Sierra;
-import basededatos.juegoDataBase;
+import basededatos.JuegoDataBase;
 import objetos.GemaAzul;
 import objetos.GemaRoja;
 import objetos.Llave;
@@ -25,7 +25,7 @@ public class Pantalla1 extends BaseScreen {
     private static final int ANCHO = Gdx.graphics.getWidth() / 5;
     private static final int ALTO = Gdx.graphics.getHeight() / 9;
 
-    public Pantalla1(Juego game, Popollo popollo, juegoDataBase db) {
+    public Pantalla1(Juego game, Popollo popollo, JuegoDataBase db) {
         super(game, popollo, db);
         this.fondo = new Texture("fondospantalla/bosque.png"); //Fondo de la pantalla
         this.musica = Gdx.audio.newMusic(Gdx.files.internal("sonidos/bosque.mp3")); //Musica de la pantalla
@@ -81,7 +81,7 @@ public class Pantalla1 extends BaseScreen {
             if (popollo.getObjetos().size() == 1) {
                 juegoDataBase.terminarPartida(popollo.getPuntuacion());
                 popollo.getObjetos().remove(0);
-                puerta.getSound().play(1f);
+                puerta.getSound().play(0.7f);
                 musica.stop();
                 game.setPantallaActual(new Tienda(this.game, popollo, juegoDataBase,1));
             }

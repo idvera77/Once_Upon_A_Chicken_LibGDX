@@ -1,9 +1,8 @@
 package basededatos;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 
-public class juegoDataBaseDesktop extends juegoDataBase {
+public class JuegoDataBaseDesktop extends JuegoDataBase {
 
 
     @Override

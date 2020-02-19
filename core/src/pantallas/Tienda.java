@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.ivan.popollo_adventures.Juego;
 
 import actores.*;
-import basededatos.juegoDataBase;
+import basededatos.JuegoDataBase;
 import objetos.*;
 
 
@@ -21,12 +21,12 @@ public class Tienda extends BaseScreen {
     private static final int ANCHO = Gdx.graphics.getWidth() / 5;
     private static final int ALTO = Gdx.graphics.getHeight() / 9;
 
-    public Tienda(Juego game, Popollo popollo, juegoDataBase db, int seleccion) {
+    public Tienda(Juego game, Popollo popollo, JuegoDataBase db, int seleccion) {
         super(game, popollo, db);
         this.seleccion = seleccion;
         this.fondo = new Texture("fondospantalla/tienda.png");
         this.musica = Gdx.audio.newMusic(Gdx.files.internal("sonidos/tienda.mp3"));
-        musica.setVolume(0.2f);
+        musica.setVolume(0.4f);
         musica.play();
 
         //Añadimos la pocion
@@ -78,7 +78,7 @@ public class Tienda extends BaseScreen {
             if (popollo.checkCollision(puerta)) {
                 if (popollo.getObjetos().size() == 1) {
                     popollo.getObjetos().remove(0);
-                    puerta.getSound().play(1f);
+                    puerta.getSound().play(0.7f);
                     musica.stop();
                     if (seleccion == 3) {
                         game.setPantallaActual(new Pantalla1(this.game, popollo, juegoDataBase));
@@ -109,7 +109,7 @@ public class Tienda extends BaseScreen {
      * La salud no puede superar la vida maxima
      */
     public void recogerPocion() {
-        pocion.getSound().play(0.8f);
+        pocion.getSound().play(0.6f);
         pocion.remove();
         pocion = new Pocion(0, 0);
         if (popollo.getVida() + 30 > popollo.getVidaMaxima()) {

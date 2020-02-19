@@ -2,7 +2,7 @@ package basededatos;
 
 import java.util.ArrayList;
 
-public abstract class juegoDataBase {
+public abstract class JuegoDataBase {
     private static  int databaseVersion;
     private static  String databaseName;
     private static  String SCORE_TABLENAME;
@@ -15,7 +15,7 @@ public abstract class juegoDataBase {
     public abstract void terminarPartida(int puntos);
     public abstract ArrayList<String> mejorPartida();
 
-    public juegoDataBase(){
+    public JuegoDataBase(){
         databaseVersion=1;
         databaseName="OnceUponAChicken";
         SCORE_TABLENAME="totalScore";
