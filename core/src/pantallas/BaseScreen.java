@@ -188,6 +188,7 @@ public abstract class BaseScreen implements Screen {
         boton6.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                juegoDataBase.empezarPartida();
                 reiniciar();
             }
         });
