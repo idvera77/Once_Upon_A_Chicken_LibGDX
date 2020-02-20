@@ -19,6 +19,7 @@ import android.support.annotation.RequiresApi;
 import com.ivan.popollo_adventures.R;
 
 public class ServicioNotificacion extends Service {
+    private Handler handler;
 
     public void startNotificationListener() {
         new Thread(new Runnable() {
@@ -34,12 +35,12 @@ public class ServicioNotificacion extends Service {
     //Para no ser pesados luego cancelamos la notificacion
     @Override
     public void onCreate() {
-        Handler handler = new Handler();
+        handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
                 startNotificationListener();
             }
-        }, 20000);
+        }, 60000);
         super.onCreate();
     }
 
@@ -74,13 +75,14 @@ public class ServicioNotificacion extends Service {
 
     @Override
     public void onDestroy() {
+        this.stopSelf();
         super.onDestroy();
     }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return onBind(intent);
     }
 
 }
