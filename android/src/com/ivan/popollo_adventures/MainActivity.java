@@ -9,39 +9,41 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.media.AudioAttributes;
 import android.media.MediaPlayer;
-import android.media.RingtoneManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import servicios.ServicioNotificacion;
+
 
 public class MainActivity extends AppCompatActivity {
     public MediaPlayer musica;
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Iniciamos la musica nada mas abrir el main activity, con sonido bajo y en bucle por si queremos estar
+        //dos horas en mirando el tutorial
         musica = MediaPlayer.create(this, R.raw.portada);
         musica.setVolume(0.4f, 0.4f);
-        musica.isLooping();
+        musica.setLooping(true);
         musica.start();
 
-        notificacion();
+        //Iniciamos el servicio
+        startService(new Intent(this, ServicioNotificacion.class));
 
+        //Menu de navegacion con fragments
+        //Depende del id carga muestra uno u otro, predeterminado esta el fragment Juego
         BottomNavigationView navigationView = findViewById(R.id.btm_nav);
-
         navigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -85,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Cuando volvemos del juego a la actividad principal de Android vuelve a sonar la musica
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onRestart() {
         musica = MediaPlayer.create(this, R.raw.portada);
@@ -100,57 +103,27 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         new AlertDialog.Builder(this)
-        .setIcon(R.drawable.ic_videogame_asset_black_24dp)
-        .setTitle("Adiós Popollo ^_^")
-        .setMessage("¿Estas seguro que quieres cerrar el juego?")
-        .setPositiveButton("Si", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
-            }
+                .setIcon(R.drawable.ic_videogame_asset_black_24dp)
+                .setTitle("Adiós Popollo ^_^")
+                .setMessage("¿Estas seguro que quieres cerrar el juego?")
+                .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
 
-        })
-        .setNegativeButton("No", null)
-        .show();
+                })
+                .setNegativeButton("No", null)
+                .show();
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
-        if(musica!=null){
+        if (musica != null) {
             musica.stop();
             musica.release();
             musica = null;
         }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void notificacion(){
-        AudioAttributes audioAttr = new AudioAttributes.Builder()
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
-                .build();
-        
-        NotificationManager nmanager= (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        NotificationChannel channel = new NotificationChannel("principal","principal",NotificationManager.IMPORTANCE_DEFAULT);
-        nmanager.createNotificationChannel(channel);
-        channel.setLightColor(Color.WHITE);
-        channel.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM), audioAttr);
-
-        Notification.Builder builder= new Notification.Builder(this,"principal");
-
-        builder.setSmallIcon(R.drawable.ic_videogame_asset_black_24dp);
-        builder.setContentTitle("¿Quieres jugar de una vez?");
-        builder.setContentText("Gracias ^_^");
-        builder.setLights(Color.BLUE,1,0);
-        builder.setColor(R.drawable.ic_videogame_asset_black_24dp);
-
-        builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_videogame_asset_black_24dp));
-        builder.setOngoing(false);
-
-        builder.setColorized(true);
-
-
-        nmanager.notify(1,builder.build());
+        super.onDestroy();
     }
 }
