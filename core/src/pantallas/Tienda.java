@@ -80,6 +80,8 @@ public class Tienda extends BaseScreen {
                     popollo.getObjetos().remove(0);
                     puerta.getSound().play(0.7f);
                     musica.stop();
+                    musica.dispose();
+                    pantalla.dispose();
                     if (seleccion == 3) {
                         game.setPantallaActual(new Pantalla1(this.game, popollo, juegoDataBase));
                     } else if (seleccion == 1) {

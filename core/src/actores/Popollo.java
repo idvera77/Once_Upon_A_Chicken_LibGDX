@@ -16,12 +16,15 @@ import escuchadores.EscuchadorJugador;
 public class Popollo extends Personaje {
     private Sound sound;
     private HashSet<Integer> moving;
+    private Texture derecha, izquierda;
 
     /**
      * Contructor sin parametros, el cual incluye su sprite y su sonido
      */
     public Popollo() {
         super("personajes/polloderecha.png");
+        derecha = new Texture("personajes/polloderecha.png");
+        izquierda = new Texture("personajes/polloizquierda.png");
         sound = Gdx.audio.newSound(Gdx.files.internal("sonidos/daño.mp3"));
         moving = new HashSet<Integer>();
         addListener(new EscuchadorJugador(this));
@@ -91,7 +94,7 @@ public class Popollo extends Personaje {
         if (getX() <= 0) {
             setX(0);
         } else {
-            this.sprite = new Sprite(new Texture("personajes/polloizquierda.png"));
+            this.sprite.setTexture(izquierda);
             sprite.setBounds(sprite.getX(), sprite.getY(), Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 7);
             MoveByAction moveLeftAction = new MoveByAction();
             moveLeftAction.setAmount(-5, 0);
@@ -110,7 +113,7 @@ public class Popollo extends Personaje {
         if (getX() >= Gdx.graphics.getWidth() - this.sprite.getWidth()) {
             setX(Gdx.graphics.getWidth() - this.sprite.getWidth());
         } else {
-            this.sprite = new Sprite(new Texture("personajes/polloderecha.png"));
+            this.sprite.setTexture(derecha);
             sprite.setBounds(sprite.getX(), sprite.getY(), Gdx.graphics.getWidth() / 10, Gdx.graphics.getHeight() / 7);
             MoveByAction moveRightAction = new MoveByAction();
             moveRightAction.setAmount(5, 0);

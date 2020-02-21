@@ -80,6 +80,8 @@ public class Pantalla2 extends BaseScreen {
                 popollo.getObjetos().remove(0);
                 puerta.getSound().play(0.7f);
                 musica.stop();
+                musica.dispose();
+                pantalla.dispose();
                 game.setPantallaActual(new Tienda(this.game, popollo, juegoDataBase, 2));
             }
         }

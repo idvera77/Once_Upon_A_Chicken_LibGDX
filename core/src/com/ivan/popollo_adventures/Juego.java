@@ -43,6 +43,7 @@ public class Juego extends Game {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         pantallaActual.render(Gdx.graphics.getDeltaTime());
+        dispose();
     }
 
     @Override

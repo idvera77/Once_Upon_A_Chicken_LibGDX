@@ -1,5 +1,6 @@
 package pantallas;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 
@@ -51,9 +52,8 @@ public abstract class BaseScreen implements Screen {
     protected TextButton.TextButtonStyle estiloBoton, estiloBoton2, estiloBoton3, estiloBoton4, estiloBoton5, estiloBoton6;
     protected TextButton boton1, boton2, boton3, boton4, boton5, boton6;
     protected Pixmap pixmap, pixmap2;
-    protected Sound sound;
     protected Music musica;
-    protected int puntuacion, direccion;
+    protected int direccion;
     protected JuegoDataBase juegoDataBase;
 
     public BaseScreen(Juego juego, Popollo heroe, JuegoDataBase db) {
@@ -105,7 +105,7 @@ public abstract class BaseScreen implements Screen {
         //Boton3
         fuente3 = new BitmapFont();
         estiloBoton3 = new TextButton.TextButtonStyle();
-        estiloBoton3.font = fuente2;
+        estiloBoton3.font = fuente3;
         estiloBoton3.over = new TextureRegionDrawable(new Texture("controles/arriba.png"));
         estiloBoton3.up = new TextureRegionDrawable(new Texture("controles/arriba.png"));
         boton3 = new TextButton("", estiloBoton3);
@@ -216,6 +216,12 @@ public abstract class BaseScreen implements Screen {
         textStyle.font = font;
         textoGameOver = new Label("GAME OVER", textStyle);
         textoGameOver.setPosition(Gdx.graphics.getWidth() / 31 * 6, Gdx.graphics.getHeight() / 2);
+        fuente.dispose();
+        fuente2.dispose();
+        fuente3.dispose();
+        fuente4.dispose();
+        fuente5.dispose();
+        fuente6.dispose();
 
         //Añadimos la barra de vida
         /**
@@ -333,8 +339,7 @@ public abstract class BaseScreen implements Screen {
 
     @Override
     public void dispose() {
-        pantalla.dispose();
-        musica.dispose();
+
     }
 
     /**
@@ -370,8 +375,7 @@ public abstract class BaseScreen implements Screen {
         sierra.movimientoSierra();
         //Si este desaparece de la pantalla vuelve a generarse otro.
         if (cuervo.getX() + cuervo.getWidth() <= 0) {
-            cuervo.remove();
-            cuervo = new Cuervo(Gdx.graphics.getWidth() + popollo.getX() * 1, Gdx.graphics.getHeight() / 23 * 4);
+            cuervo.setPosition(Gdx.graphics.getWidth() + popollo.getX() * 1, Gdx.graphics.getHeight() / 23 * 4);
             pantalla.addActor(cuervo);
         }
     }
@@ -457,6 +461,7 @@ public abstract class BaseScreen implements Screen {
      */
     public void reiniciar() {
         musica.stop();
+        dispose();
         game.setPantallaActual(new Pantalla1(game, new Popollo(), juegoDataBase));
     }
 
