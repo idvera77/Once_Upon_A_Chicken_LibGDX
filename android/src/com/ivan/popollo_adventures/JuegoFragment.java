@@ -29,8 +29,7 @@ public class JuegoFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         activity = (MainActivity) getActivity();
         vista = inflater.inflate(R.layout.fragment_juego, container, false);
         btnJugar = (Button) vista.findViewById(R.id.botonJugar);

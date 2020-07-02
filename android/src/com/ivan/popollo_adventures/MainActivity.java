@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //Iniciamos la musica nada mas abrir el main activity, con sonido bajo y en bucle por si queremos estar
-        //dos horas en mirando el tutorial
+        //dos horas mirando el tutorial
         musica = MediaPlayer.create(this, R.raw.portada);
         musica.setVolume(0.4f, 0.4f);
         musica.setLooping(true);
